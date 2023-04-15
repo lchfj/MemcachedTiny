@@ -12,8 +12,21 @@
 
 namespace MemcachedTiny.Node
 {
-    public interface INodeSelecter
+    /// <summary>
+    /// 单节点选择器
+    /// </summary>
+    public class NodeSelecterSingle : INodeSelecter
     {
-        INode SelectForKey(string key);
+        public NodeSelecterSingle(IReadOnlyList<INode> nodeList)
+        {
+            Node = nodeList[0];
+        }
+
+        protected virtual INode Node { get; }
+
+        public INode SelectForKey(string _)
+        {
+            return Node;
+        }
     }
 }

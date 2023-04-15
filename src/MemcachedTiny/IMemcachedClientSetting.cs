@@ -10,10 +10,10 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Node
+namespace MemcachedTiny
 {
-    public interface INodeSelecter
+    public interface IMemcachedClientSetting
     {
-        INode SelectForKey(string key);
+        IReadOnlyList<string> Connect { get; }
     }
 }

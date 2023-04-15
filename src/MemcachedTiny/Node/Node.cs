@@ -10,10 +10,24 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Data;
+
 namespace MemcachedTiny.Node
 {
-    public interface INodeSelecter
+    public class Node : INode
     {
-        INode SelectForKey(string key);
+        public Node(string v)
+        {
+        }
+
+        public T Execute<T>(IRequest request) where T : IResponseReader, new()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> ExecuteAsync<T, U>(IRequest request, CancellationToken cancellation) where U : IResponseReader, T, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

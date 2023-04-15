@@ -12,8 +12,16 @@
 
 namespace MemcachedTiny.Node
 {
-    public interface INodeSelecter
+    internal class NodeSelecterMulti : INodeSelecter
     {
-        INode SelectForKey(string key);
+        public NodeSelecterMulti(IReadOnlyList<INode> nodeList)
+        {
+
+        }
+
+        public INode SelectForKey(string key)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
