@@ -10,28 +10,11 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using MemcachedTiny.Data;
-
-namespace MemcachedTiny.Node
+namespace MemcachedTiny.Util
 {
-    public class Node : INode
+    public interface IConsistentHashNode
     {
-        public Node(string v)
-        {
-        }
-
-        public int NodeIndex => throw new NotImplementedException();
-
-        public bool Avaliable => throw new NotImplementedException();
-
-        public T Execute<T>(IRequest request) where T : IResponseReader, new()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> ExecuteAsync<T, U>(IRequest request, CancellationToken cancellation) where U : IResponseReader, T, new()
-        {
-            throw new NotImplementedException();
-        }
+        public int NodeIndex { get; }
+        public bool Avaliable { get; }
     }
 }

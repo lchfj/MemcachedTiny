@@ -17,7 +17,7 @@ namespace MemcachedTiny.Node
     /// <summary>
     /// Memcached 节点
     /// </summary>
-    public interface INode
+    public interface INode : Util.IConsistentHashNode
     {
         /// <summary>
         /// 同步执行一个请求并返回特定结果

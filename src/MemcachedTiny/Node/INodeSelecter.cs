@@ -12,8 +12,16 @@
 
 namespace MemcachedTiny.Node
 {
+    /// <summary>
+    /// 节点选择器接口
+    /// </summary>
     public interface INodeSelecter
     {
+        /// <summary>
+        /// 为缓存键选择一个节点
+        /// </summary>
+        /// <param name="key">缓存键</param>
+        /// <returns>选择的节点</returns>
         INode SelectForKey(string key);
     }
 }

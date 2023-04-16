@@ -10,31 +10,44 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Node
+using System.Security.Cryptography;
+
+namespace MemcachedTiny.Util
 {
     /// <summary>
-    /// 单节点选择器
+    /// FNV1-a 哈希算法
     /// </summary>
-    public class NodeSelecterSingle : INodeSelecter
+    public class FNV1a : HashAlgorithm
     {
-        /// <summary>
-        /// 创建实例
-        /// </summary>
-        /// <param name="node">唯一节点</param>
-        public NodeSelecterSingle(INode node)
-        {
-            Node = node;
-        }
+        private const uint OFFSETBASIS = 2166136261;
+        private const uint PRIME = 16777619;
 
         /// <summary>
-        /// 选择的唯一节点
+        /// UInt型哈希值
         /// </summary>
-        protected virtual INode Node { get; }
+        public uint UIntHashCode { get; private set; }
 
         /// <inheritdoc/>
-        public virtual INode SelectForKey(string _)
+        public override void Initialize()
         {
-            return Node;
+            UIntHashCode = OFFSETBASIS;
+        }
+
+        /// <inheritdoc/>
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
+        {
+            var end = ibStart + cbSize;
+            for (var index = ibStart; index < end; index++)
+            {
+                UIntHashCode ^= array[index];
+                UIntHashCode *= PRIME;
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override byte[] HashFinal()
+        {
+            return BitConverter.GetBytes(UIntHashCode);
         }
     }
 }
