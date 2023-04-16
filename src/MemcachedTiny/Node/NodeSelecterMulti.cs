@@ -49,7 +49,7 @@ namespace MemcachedTiny.Node
         /// <returns></returns>
         protected virtual IKeyHash CreatKeyHash()
         {
-            throw new NotImplementedException();
+            return new KeyHashFNV1a();
         }
 
         /// <summary>

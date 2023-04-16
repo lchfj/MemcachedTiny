@@ -10,18 +10,25 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using System.Text;
+
 namespace MemcachedTiny.Node
 {
     /// <summary>
-    /// 计算缓存键哈希的方法
+    /// 缓存键 FNV1a 计算方法
     /// </summary>
-    public interface IKeyHash
+    public class KeyHashFNV1a : IKeyHash
     {
-        /// <summary>
-        /// 计算指定缓存键的哈希值
-        /// </summary>
-        /// <param name="key">缓存键</param>
-        /// <returns></returns>
-        uint Hash(string key);
+        /// <inheritdoc/>
+        public uint Hash(string key)
+        {
+            var data = Encoding.ASCII.GetBytes(key);
+
+            var hash = new Util.FNV1a();
+
+            hash.ComputeHash(data);
+
+            return hash.UIntHashCode;
+        }
     }
 }
