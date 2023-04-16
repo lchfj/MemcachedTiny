@@ -12,9 +12,14 @@
 
 namespace MemcachedTiny.Util
 {
+    /// <summary>
+    /// 分布式节点信息
+    /// </summary>
     public interface IConsistentHashNode
     {
-        public int NodeIndex { get; }
+        /// <summary>
+        /// 该节点是否现在可用
+        /// </summary>
         public bool Avaliable { get; }
     }
 }

@@ -12,10 +12,17 @@
 
 namespace MemcachedTiny.Util
 {
+    /// <summary>
+    /// 分布式一致性哈希算法
+    /// </summary>
+    /// <typeparam name="T">节点类型</typeparam>
     public interface IConsistentHash<T> where T : IConsistentHashNode
     {
+        /// <summary>
+        /// 获取哈希值对应的节点
+        /// </summary>
+        /// <param name="hash"></param>
+        /// <returns></returns>
         T GetNode(uint hash);
-        void AddNode(params T[] nodeList);
-        void RemoveNode(int nodeIndex);
     }
 }

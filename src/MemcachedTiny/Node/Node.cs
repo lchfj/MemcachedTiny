@@ -20,8 +20,6 @@ namespace MemcachedTiny.Node
         {
         }
 
-        public int NodeIndex => throw new NotImplementedException();
-
         public bool Avaliable => throw new NotImplementedException();
 
         public T Execute<T>(IRequest request) where T : IResponseReader, new()

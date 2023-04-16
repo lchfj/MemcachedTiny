@@ -58,7 +58,7 @@ namespace MemcachedTiny.Node
         /// <returns></returns>
         protected virtual IConsistentHash<INode> CreatConsistentHash()
         {
-            throw new NotImplementedException();
+            return new ConsistentHash<INode>(NodeList);
         }
 
         /// <inheritdoc/>
