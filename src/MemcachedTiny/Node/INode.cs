@@ -22,18 +22,18 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 同步执行一个请求并返回特定结果
         /// </summary>
-        /// <typeparam name="T">结果类型</typeparam>
+        /// <typeparam name="TC">结果类型</typeparam>
         /// <param name="request">请求</param>
         /// <returns>结果</returns>
-        T Execute<T>(IRequest request) where T : IResponseReader, new();
+        TC Execute<TC>(IRequest request) where TC : IResponseReader, new();
         /// <summary>
         /// 异步执行一个请求并返回特定结果
         /// </summary>
-        /// <typeparam name="T">特定的结果类型</typeparam>
-        /// <typeparam name="U">实现特定的结果类型的类</typeparam>
+        /// <typeparam name="TI">特定的结果类型</typeparam>
+        /// <typeparam name="TC">实现特定的结果类型的类</typeparam>
         /// <param name="request">请求</param>
         /// <param name="cancellation">一个标识操作取消的<see cref="CancellationToken"/></param>
         /// <returns>异步任务</returns>
-        Task<T> ExecuteAsync<T, U>(IRequest request, CancellationToken cancellation) where U : T, IResponseReader, new();
+        Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : TI, IResponseReader, new();
     }
 }

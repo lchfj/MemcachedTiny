@@ -25,7 +25,7 @@ namespace MemcachedTiny
             var node = SelectNodeForKey(key);
 
             var request = new SetRequest(key, bytes, second);
-            return node.Execute<GetResult>(request);
+            return node.Execute<Result.Result>(request);
         }
 
         /// <inheritdoc/>
@@ -49,7 +49,7 @@ namespace MemcachedTiny
 
             var request = new TouchRequest(key, second);
 
-            return node.Execute<GetResult>(request);
+            return node.Execute<Result.Result>(request);
         }
 
         /// <inheritdoc/>
@@ -73,7 +73,7 @@ namespace MemcachedTiny
 
             var request = new DeleteRequest(key);
 
-            return node.Execute<GetResult>(request);
+            return node.Execute<Result.Result>(request);
         }
 
         /// <inheritdoc/>
@@ -86,7 +86,7 @@ namespace MemcachedTiny
             {
                 var node = NodeList[i];
 
-                resultList[i] = node.Execute<GetResult>(request);
+                resultList[i] = node.Execute<Result.Result>(request);
             }
 
             return new Result.Result()

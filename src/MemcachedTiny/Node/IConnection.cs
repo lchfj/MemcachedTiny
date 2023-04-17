@@ -10,17 +10,14 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Data
+using MemcachedTiny.Data;
+
+namespace MemcachedTiny.Node
 {
-    /// <summary>
-    /// Memcached 原始结果读取器
-    /// </summary>
-    public interface IResponseReader
+    public interface IConnection : IDisposable
     {
-        /// <summary>
-        /// 读取结果
-        /// </summary>
-        /// <param name="response">Memcached 原始结果</param>
-        void Read(IResponse response);
+        bool Avaliable { get; }
+
+        TC Execute<TC>(IRequest request) where TC : IResponseReader, new();
     }
 }
