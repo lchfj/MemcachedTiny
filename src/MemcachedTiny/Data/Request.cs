@@ -14,5 +14,6 @@ namespace MemcachedTiny.Data
 {
     public abstract class Request : IRequest
     {
+        public abstract Stream GetStream();
     }
 }

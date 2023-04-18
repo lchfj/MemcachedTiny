@@ -11,25 +11,111 @@
  */
 
 using MemcachedTiny.Data;
+using System.Net.Sockets;
 
 namespace MemcachedTiny.Node
 {
     internal class TcpConnection : IConnection
     {
-        public TcpConnection(IPEndPoint endPoint)
+        protected const int ResponseHeaderLength = 24;
+
+        public virtual bool Avaliable => TcpClient?.Connected ?? false;
+
+        protected virtual TcpClient TcpClient { get; }
+        protected virtual NetworkStream Stream { get; }
+
+        public TcpConnection(IConnectionEndPoint endPoint)
         {
+            TcpClient = CreatTcpClient(endPoint);
+            Stream = TcpClient.GetStream();
         }
 
-        public bool Avaliable => throw new NotImplementedException();
-
-        public void Dispose()
+        protected virtual TcpClient CreatTcpClient(IConnectionEndPoint endPoint)
         {
-            throw new NotImplementedException();
+            var tcp = new TcpClient();
+
+            tcp.Connect(endPoint.Host, endPoint.Port);
+            tcp.SendTimeout = 3000;
+            tcp.ReceiveTimeout = 3000;
+
+            return tcp;
+        }
+
+        public virtual void Dispose()
+        {
+            Stream.Close();
+            Stream.Dispose();
+            TcpClient.Close();
+            TcpClient.Dispose();
         }
 
         public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
-            throw new NotImplementedException();
+            ClearStream();
+            SendRequest(request);
+
+            var response = ReadResponse();
+
+
+            var tc = new TC();
+            tc.Read(response);
+
+
+            return tc;
+        }
+
+
+        protected virtual Response ReadResponse()
+        {
+            var headerByte = ReadLength(ResponseHeaderLength);
+            var header = new Data.ResponseHeader(headerByte);
+
+            var extra = ReadLength(header.ExtraLength);
+            var key = ReadLength(header.KeyLength);
+            var value = ReadLength(header.ValueLength);
+
+            return new Response(header, extra, key, value);
+        }
+
+        protected virtual void SendRequest(IRequest request)
+        {
+            using var sendStream = request.GetStream();
+
+            sendStream.Position = 0;
+            sendStream.CopyTo(Stream);
+        }
+
+        protected virtual void ClearStream()
+        {
+            while (true)
+            {
+                var byteInBuffer = TcpClient.Available;
+                if (byteInBuffer <= 0)
+                    break;
+
+                var buffer = new byte[byteInBuffer];
+                Stream.Read(buffer, 0, byteInBuffer);
+            }
+        }
+
+        protected virtual byte[] ReadLength(int length)
+        {
+            if (length <= 0)
+                return Array.Empty<byte>();
+
+            var buffer = new byte[length];
+            var position = 0;
+
+            while (position < length)
+            {
+                var size = Stream.Read(buffer, position, length - position);
+                if (size == 0)
+                    throw new IOException("Socket Is Close");
+
+                position += size;
+            }
+
+            return buffer;
         }
     }
 }

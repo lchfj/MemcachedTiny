@@ -10,17 +10,11 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Data
+namespace MemcachedTiny.Node
 {
-    public class FlushRequest : Request
+    public interface IConnectionEndPoint
     {
-        public FlushRequest()
-        {
-        }
-
-        public override Stream GetStream()
-        {
-            throw new NotImplementedException();
-        }
+        string Host { get; }
+        int Port { get; }
     }
 }

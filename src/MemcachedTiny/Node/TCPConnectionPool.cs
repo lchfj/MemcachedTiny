@@ -21,13 +21,13 @@ namespace MemcachedTiny.Node
         protected virtual IReadOnlyList<IConnection> AllConnectionList { get; }
         protected virtual ConcurrentQueue<IConnection> AvailablePool { get; }
 
-        public TCPConnectionPool(IPEndPoint endPoint)
+        public TCPConnectionPool(IConnectionEndPoint endPoint)
         {
             AllConnectionList = CreatConnection(endPoint);
             AvailablePool = new ConcurrentQueue<IConnection>(AllConnectionList);
         }
 
-        protected virtual IReadOnlyList<IConnection> CreatConnection(IPEndPoint endPoint)
+        protected virtual IReadOnlyList<IConnection> CreatConnection(IConnectionEndPoint endPoint)
         {
             var list = new List<IConnection>(MaxPoolSize);
 

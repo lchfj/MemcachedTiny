@@ -20,5 +20,10 @@ namespace MemcachedTiny.Data
         {
             this.key = key;
         }
+
+        public override Stream GetStream()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

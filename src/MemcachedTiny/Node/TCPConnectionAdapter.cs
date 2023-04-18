@@ -14,21 +14,41 @@ using MemcachedTiny.Data;
 
 namespace MemcachedTiny.Node
 {
-    internal class TCPConnectionAdapter : IConnection
+    public class TCPConnectionAdapter : IConnection
     {
+        public bool Avaliable => Connection.Avaliable;
+
+        protected virtual IConnection Connection { get; set; }
+        protected virtual IConnectionPool ConnectionPool { get; }
+
         public TCPConnectionAdapter(IConnection connection, IConnectionPool connectionPool)
         {
+            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
+            ConnectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
         }
 
-        public bool Avaliable => throw new NotImplementedException();
-
-        public void Dispose()
+        ~TCPConnectionAdapter()
         {
-            throw new NotImplementedException();
+            Dispose();
         }
 
-        public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
+        public virtual void Dispose()
         {
+            var connection = Connection;
+            if (connection is null)
+                return;
+
+            //TODO: 释放时不应当有执行的任务
+            Connection = null;
+            ConnectionPool.Release(connection);
+        }
+
+        public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
+        {
+            var c = Connection;
+            if (c is not null)
+                return c.Execute<TC>(request);
+
             throw new NotImplementedException();
         }
     }

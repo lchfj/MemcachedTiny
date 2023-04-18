@@ -50,7 +50,7 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建连接池
         /// </summary>
-        protected virtual IConnectionPool CreatConnectionPool(IPEndPoint endPoint)
+        protected virtual IConnectionPool CreatConnectionPool(IConnectionEndPoint endPoint)
         {
             return new TCPConnectionPool(endPoint);
         }
@@ -58,19 +58,10 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建连接点
         /// </summary>
-        protected virtual IPEndPoint CreatEndPoint(string connectString)
+        protected virtual IConnectionEndPoint CreatEndPoint(string connectString)
         {
-            if (string.IsNullOrWhiteSpace(connectString))
-                return null;
-
-            var array = connectString.Split(':');
-            if (!IPAddress.TryParse(array[0], out var ipaddress))
-                throw new ArgumentException(connectString);
-
-            if (!ushort.TryParse(array[1], out var port))
-                throw new ArgumentException(connectString);
-
-            return new IPEndPoint(ipaddress, port);
+            ConnectionEndPoint.TryParse(connectString, out var endPoint);
+            return endPoint;
         }
 
         /// <inheritdoc/>

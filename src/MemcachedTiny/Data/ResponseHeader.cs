@@ -12,15 +12,18 @@
 
 namespace MemcachedTiny.Data
 {
-    public class FlushRequest : Request
+    internal class ResponseHeader
     {
-        public FlushRequest()
+        private byte[] headerByte;
+
+        public ResponseHeader(byte[] headerByte)
         {
+            this.headerByte = headerByte;
         }
 
-        public override Stream GetStream()
-        {
-            throw new NotImplementedException();
-        }
+        public int ExtraLength { get; }
+        public int KeyLength { get; }
+        public int TotalBody { get; }
+        public int ValueLength => TotalBody - ExtraLength - KeyLength;
     }
 }

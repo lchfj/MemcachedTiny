@@ -12,15 +12,19 @@
 
 namespace MemcachedTiny.Data
 {
-    public class FlushRequest : Request
+    internal class Response : IResponse
     {
-        public FlushRequest()
-        {
-        }
+        private ResponseHeader header;
+        private byte[] extra;
+        private byte[] key;
+        private byte[] value;
 
-        public override Stream GetStream()
+        public Response(ResponseHeader header, byte[] extra, byte[] key, byte[] value)
         {
-            throw new NotImplementedException();
+            this.header = header;
+            this.extra = extra;
+            this.key = key;
+            this.value = value;
         }
     }
 }

@@ -14,5 +14,6 @@ namespace MemcachedTiny.Data
 {
     public interface IRequest
     {
+        Stream GetStream();
     }
 }

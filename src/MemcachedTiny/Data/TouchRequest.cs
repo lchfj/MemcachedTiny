@@ -20,5 +20,10 @@ namespace MemcachedTiny.Data
         {
             this.second = second;
         }
+
+        public override Stream GetStream()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
