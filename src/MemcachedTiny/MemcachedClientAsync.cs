@@ -18,13 +18,13 @@ namespace MemcachedTiny
     public partial class MemcachedClient : IMemcachedClientAsync
     {
         /// <inheritdoc/>
-        public Task<IResult> SetAsync(string key, byte[] bytes, int second, CancellationToken cancellation = default)
+        public Task<IResult> SetAsync(string key, uint flags, uint second, byte[] bytes, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
             var node = SelectNodeForKey(key);
 
-            var request = new SetRequest(key, bytes, second);
+            var request = new SetRequest(key, flags, second, bytes);
 
             return node.ExecuteAsync<IResult, Result.Result>(request, cancellation);
         }
@@ -42,19 +42,19 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IResult> TouchAsync(string key, int second, CancellationToken cancellation = default)
+        public Task<IResult> TouchAsync(string key, uint second, uint cas, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
             var node = SelectNodeForKey(key);
 
-            var request = new TouchRequest(key, second);
+            var request = new TouchRequest(key, second, cas);
 
             return node.ExecuteAsync<IResult, Result.Result>(request, cancellation);
         }
 
         /// <inheritdoc/>
-        public Task<IGetResult> GetAndTouchAsync(string key, int second, CancellationToken cancellation = default)
+        public Task<IGetResult> GetAndTouchAsync(string key, uint second, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -78,9 +78,9 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IResult> FlushAsync(CancellationToken cancellation = default)
+        public Task<IResult> FlushAsync(uint second, CancellationToken cancellation = default)
         {
-            var request = new FlushRequest();
+            var request = new FlushRequest(second);
 
             var resultList = new Task<IResult>[NodeList.Count];
             for (var i = 0; i < NodeList.Count; i++)

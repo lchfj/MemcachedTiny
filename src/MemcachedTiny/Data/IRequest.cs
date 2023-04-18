@@ -12,8 +12,15 @@
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 请求类要实现的接口
+    /// </summary>
     public interface IRequest
     {
+        /// <summary>
+        /// 获取包含二进制请求数据的流
+        /// </summary>
+        /// <returns></returns>
         Stream GetStream();
     }
 }

@@ -10,22 +10,62 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 添加或替换缓存
+    /// </summary>
     public class SetRequest : KeyRequest
     {
-        private byte[] bytes;
-        private int second;
+        /// <inheritdoc/>
+        public override byte Opcode => 0x01;
+        /// <inheritdoc/>
+        public override byte[] Extras { get; }
+        /// <inheritdoc/>
+        public override byte[] Value { get; }
 
-        public SetRequest(string key, byte[] bytes, int second) : base(key)
+        /// <summary>
+        /// 数据类型
+        /// </summary>
+        public uint Flags { get; }
+        /// <summary>
+        /// 过期时间
+        /// </summary>
+        public uint Second { get; }
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="key">缓存键</param>
+        /// <param name="flag">数据类型</param>
+        /// <param name="second">过期时间</param>
+        /// <param name="bytes">数据</param>
+        public SetRequest(string key, uint flag, uint second, byte[] bytes) : base(key)
         {
-            this.bytes = bytes;
-            this.second = second;
+            Value = bytes;
+            Second = second;
+            Flags = flag;
+
+            Extras = CreatExtras();
         }
 
-        public override Stream GetStream()
+        /// <summary>
+        /// 创建该请求特定的扩展数据
+        /// </summary>
+        /// <returns></returns>
+        protected virtual byte[] CreatExtras()
         {
-            throw new NotImplementedException();
+            var bytes = new byte[8];
+
+            var buffer = MBitConverter.GetByte(Flags);
+            buffer.CopyTo(bytes, 0);
+
+            buffer = MBitConverter.GetByte(Second);
+            buffer.CopyTo(bytes, 4);
+
+            return bytes;
         }
     }
 }

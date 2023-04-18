@@ -12,18 +12,26 @@
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 删除请求
+    /// </summary>
     public class DeleteRequest : KeyRequest
     {
-        private string key;
+        /// <inheritdoc/>
+        public override byte Opcode => 0x04;
 
+        /// <inheritdoc/>
+        public override byte[] Extras => Array.Empty<byte>();
+
+        /// <inheritdoc/>
+        public override byte[] Value => Array.Empty<byte>();
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="key">缓存键</param>
         public DeleteRequest(string key) : base(key)
         {
-            this.key = key;
-        }
-
-        public override Stream GetStream()
-        {
-            throw new NotImplementedException();
         }
     }
 }

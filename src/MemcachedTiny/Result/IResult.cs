@@ -21,5 +21,9 @@ namespace MemcachedTiny.Result
         /// 操作是否成功
         /// </summary>
         bool Success { get; }
+        /// <summary>
+        /// 数据版本
+        /// </summary>
+        uint CAS { get; }
     }
 }

@@ -10,20 +10,38 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 获取并更新过期时间请求
+    /// </summary>
     public class GetAndTouchRequest : KeyRequest
     {
-        private int second;
+        /// <inheritdoc/>
+        public override byte Opcode => 0x1d;
 
-        public GetAndTouchRequest(string key, int second) : base(key)
+        /// <inheritdoc/>
+        public override byte[] Extras => MBitConverter.GetByte(Second);
+
+        /// <inheritdoc/>
+        public override byte[] Value => Array.Empty<byte>();
+
+        /// <summary>
+        /// 新的过期时间
+        /// </summary>
+        public uint Second { get; }
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="key">缓存键</param>
+        /// <param name="second">新的过期时间</param>
+        public GetAndTouchRequest(string key, uint second) : base(key)
         {
-            this.second = second;
+            Second = second;
         }
 
-        public override Stream GetStream()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

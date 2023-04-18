@@ -18,6 +18,9 @@ namespace MemcachedTiny.Result
     public class GetResult : Result, IGetResult
     {
         /// <inheritdoc/>
-        public byte[] Value { get; protected set; }
+        public uint Flags => throw new NotImplementedException();
+
+        /// <inheritdoc/>
+        public byte[] Value => throw new NotImplementedException();
     }
 }

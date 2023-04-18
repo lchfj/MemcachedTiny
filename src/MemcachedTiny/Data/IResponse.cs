@@ -12,7 +12,7 @@
 
 namespace MemcachedTiny.Data
 {
-    public interface IResponse
+    public interface IResponse : IPacketStructure
     {
     }
 }

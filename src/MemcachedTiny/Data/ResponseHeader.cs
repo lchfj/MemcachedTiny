@@ -12,7 +12,7 @@
 
 namespace MemcachedTiny.Data
 {
-    internal class ResponseHeader
+    public class ResponseHeader
     {
         private byte[] headerByte;
 

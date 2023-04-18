@@ -12,18 +12,27 @@
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 获取数据请求
+    /// </summary>
     public class GetRequest : KeyRequest
     {
-        private string key;
+        /// <inheritdoc/>
+        public override byte Opcode => 0x00;
 
+        /// <inheritdoc/>
+        public override byte[] Extras => Array.Empty<byte>();
+
+        /// <inheritdoc/>
+        public override byte[] Value => Array.Empty<byte>();
+
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="key">缓存键</param>
         public GetRequest(string key) : base(key)
         {
-            this.key = key;
-        }
-
-        public override Stream GetStream()
-        {
-            throw new NotImplementedException();
         }
     }
 }

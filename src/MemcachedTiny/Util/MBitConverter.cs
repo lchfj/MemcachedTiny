@@ -10,9 +10,28 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Data
+namespace MemcachedTiny.Util
 {
-    public interface IRequestHeader
+    public static class MBitConverter
     {
+        public static byte[] GetByte(ushort value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
+        }
+
+        public static byte[] GetByte(uint value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
+        }
     }
 }

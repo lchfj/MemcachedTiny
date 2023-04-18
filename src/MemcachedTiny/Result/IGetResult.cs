@@ -18,6 +18,11 @@ namespace MemcachedTiny.Result
     public interface IGetResult : IResult
     {
         /// <summary>
+        /// 数据标识
+        /// </summary>
+        uint Flags { get; }
+
+        /// <summary>
         /// 获取到的数据
         /// </summary>
         byte[] Value { get; }

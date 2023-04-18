@@ -19,12 +19,12 @@ namespace MemcachedTiny
     {
 
         /// <inheritdoc/>
-        public IResult Set(string key, byte[] bytes, int second)
+        public IResult Set(string key, uint flags, uint second, byte[] bytes)
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);
 
-            var request = new SetRequest(key, bytes, second);
+            var request = new SetRequest(key, flags, second, bytes);
             return node.Execute<Result.Result>(request);
         }
 
@@ -41,19 +41,19 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IResult Touch(string key, int second)
+        public IResult Touch(string key, uint second, uint cas)
         {
             key = AssertKey(key);
 
             var node = SelectNodeForKey(key);
 
-            var request = new TouchRequest(key, second);
+            var request = new TouchRequest(key, second, cas);
 
             return node.Execute<Result.Result>(request);
         }
 
         /// <inheritdoc/>
-        public IGetResult GetAndTouch(string key, int second)
+        public IGetResult GetAndTouch(string key, uint second)
         {
             key = AssertKey(key);
 
@@ -77,9 +77,9 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IResult Flush()
+        public IResult Flush(uint second)
         {
-            var request = new FlushRequest();
+            var request = new FlushRequest(second);
 
             var resultList = new IResult[NodeList.Count];
             for (var i = 0; i < NodeList.Count; i++)

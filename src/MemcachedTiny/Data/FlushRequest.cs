@@ -10,17 +10,42 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 清空所有请求
+    /// </summary>
     public class FlushRequest : Request
     {
-        public FlushRequest()
-        {
-        }
 
-        public override Stream GetStream()
+        /// <inheritdoc/>
+        public override byte Opcode => 0x08;
+
+        /// <inheritdoc/>
+        public override byte[] Extras => MBitConverter.GetByte(Second);
+
+        /// <inheritdoc/>
+        public override string Key => string.Empty;
+
+        /// <inheritdoc/>
+        public override byte[] Value => Array.Empty<byte>();
+
+
+
+        /// <summary>
+        /// 清空时间
+        /// </summary>
+        public uint Second { get; }
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="second">清空时间</param>
+        public FlushRequest(uint second)
         {
-            throw new NotImplementedException();
+            Second = second;
         }
     }
 }

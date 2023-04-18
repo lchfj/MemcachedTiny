@@ -12,7 +12,7 @@
 
 namespace MemcachedTiny.Data
 {
-    internal class Response : IResponse
+    public class Response : IResponse
     {
         private ResponseHeader header;
         private byte[] extra;
@@ -26,5 +26,29 @@ namespace MemcachedTiny.Data
             this.key = key;
             this.value = value;
         }
+
+        public byte Magic => throw new NotImplementedException();
+
+        public byte Opcode => throw new NotImplementedException();
+
+        public ushort KeyLength => throw new NotImplementedException();
+
+        public byte ExtrasLength => throw new NotImplementedException();
+
+        public byte DataType => throw new NotImplementedException();
+
+        public uint TotalBodyLength => throw new NotImplementedException();
+
+        public ushort VbucketIdOrStatus => throw new NotImplementedException();
+
+        public uint Opaque => throw new NotImplementedException();
+
+        public uint CAS => throw new NotImplementedException();
+
+        public byte[] Extras => throw new NotImplementedException();
+
+        public string Key => throw new NotImplementedException();
+
+        public byte[] Value => throw new NotImplementedException();
     }
 }

@@ -20,8 +20,13 @@ namespace MemcachedTiny.Result
     public class Result : IResult, IResponseReader
     {
         /// <inheritdoc/>
-        public bool Success { get; set; }
+        public bool Success => throw new NotImplementedException();
 
+        /// <inheritdoc/>
+        public uint CAS => throw new NotImplementedException();
+
+
+        /// <inheritdoc/>
         public void Read(IResponse response)
         {
             throw new NotImplementedException();

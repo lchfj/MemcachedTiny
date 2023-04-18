@@ -23,11 +23,12 @@ namespace MemcachedTiny
         /// 添加缓存
         /// </summary>
         /// <param name="key">缓存键</param>
-        /// <param name="bytes">缓存数据</param>
+        /// <param name="flags">数据标识</param>
         /// <param name="second">缓存时间（秒）</param>
-        /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
+        /// <param name="bytes">缓存数据</param>
         /// <returns>一个代表异步任务的<see cref="Task" /></returns>
-        Task<IResult> SetAsync(string key, byte[] bytes, int second, CancellationToken cancellation = default);
+        /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
+        Task<IResult> SetAsync(string key, uint flags, uint second, byte[] bytes, CancellationToken cancellation = default);
 
         /// <summary>
         /// 获取一个缓存值（如果存在的话）
@@ -42,9 +43,10 @@ namespace MemcachedTiny
         /// </summary>
         /// <param name="key">缓存键</param>
         /// <param name="second">缓存时间（秒）</param>
+        /// <param name="cas">数据版本</param>
         /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
         /// <returns>一个代表异步任务的<see cref="Task" /></returns>
-        Task<IResult> TouchAsync(string key, int second, CancellationToken cancellation = default);
+        Task<IResult> TouchAsync(string key, uint second, uint cas, CancellationToken cancellation = default);
 
         /// <summary>
         /// 获取一个缓存值并更新缓存时间（如果存在的话）
@@ -53,7 +55,7 @@ namespace MemcachedTiny
         /// <param name="second">缓存时间（秒）</param>
         /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
         /// <returns>缓存的二进制数组（可为空）</returns>
-        Task<IGetResult> GetAndTouchAsync(string key, int second, CancellationToken cancellation = default);
+        Task<IGetResult> GetAndTouchAsync(string key, uint second, CancellationToken cancellation = default);
 
         /// <summary>
         /// 删除一个缓存
@@ -66,8 +68,9 @@ namespace MemcachedTiny
         /// <summary>
         /// 清空所有缓存
         /// </summary>
-        /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
+        /// <param name="second">清空缓存的时间</param>
         /// <returns>一个代表异步任务的<see cref="Task" /></returns>
-        Task<IResult> FlushAsync(CancellationToken cancellation = default);
+        /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
+        Task<IResult> FlushAsync(uint second, CancellationToken cancellation = default);
     }
 }

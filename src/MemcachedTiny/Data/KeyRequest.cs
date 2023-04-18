@@ -12,13 +12,21 @@
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// 使用缓存键的请求
+    /// </summary>
     public abstract class KeyRequest : Request
     {
+        /// <inheritdoc/>
+        public override string Key { get; }
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="key">缓存键</param>
         public KeyRequest(string key)
         {
             Key = key;
         }
-
-        public string Key { get; }
     }
 }

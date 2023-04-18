@@ -23,9 +23,10 @@ namespace MemcachedTiny
         /// 添加缓存
         /// </summary>
         /// <param name="key">缓存键</param>
-        /// <param name="bytes">缓存数据</param>
+        /// <param name="flags">数据标识</param>
         /// <param name="second">缓存时间（秒）</param>
-        IResult Set(string key, byte[] bytes, int second);
+        /// <param name="bytes">缓存数据</param>
+        IResult Set(string key, uint flags, uint second, byte[] bytes);
 
         /// <summary>
         /// 获取一个缓存值（如果存在的话）
@@ -39,7 +40,8 @@ namespace MemcachedTiny
         /// </summary>
         /// <param name="key">缓存键</param>
         /// <param name="second">缓存时间（秒）</param>
-        IResult Touch(string key, int second);
+        /// <param name="cas">数据版本</param>
+        IResult Touch(string key, uint second, uint cas);
 
         /// <summary>
         /// 获取一个缓存值并更新缓存时间（如果存在的话）
@@ -47,7 +49,7 @@ namespace MemcachedTiny
         /// <param name="key">缓存键</param>
         /// <param name="second">缓存时间（秒）</param>
         /// <returns>缓存的二进制数组（可为空）</returns>
-        IGetResult GetAndTouch(string key, int second);
+        IGetResult GetAndTouch(string key, uint second);
 
         /// <summary>
         /// 删除一个缓存
@@ -58,6 +60,7 @@ namespace MemcachedTiny
         /// <summary>
         /// 清空所有缓存
         /// </summary>
-        IResult Flush();
+        /// <param name="second">清空缓存的时间</param>
+        IResult Flush(uint second);
     }
 }

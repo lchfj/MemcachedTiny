@@ -68,7 +68,7 @@ namespace MemcachedTiny.Node
         protected virtual Response ReadResponse()
         {
             var headerByte = ReadLength(ResponseHeaderLength);
-            var header = new Data.ResponseHeader(headerByte);
+            var header = new ResponseHeader(headerByte);
 
             var extra = ReadLength(header.ExtraLength);
             var key = ReadLength(header.KeyLength);
