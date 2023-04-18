@@ -10,24 +10,26 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Data;
+
 namespace MemcachedTiny.Node
 {
-    /// <summary>
-    /// 连接池
-    /// </summary>
-    public interface IConnectionPool
+    internal class TCPConnectionAdapter : IConnection
     {
-        /// <summary>
-        /// 连接池是否可用
-        /// </summary>
-        bool Avaliable { get; }
-        /// <summary>
-        /// 获取一个连接
-        /// </summary>
-        IConnection GetOne();
-        /// <summary>
-        /// 释放一个连接大连接池中
-        /// </summary>
-        void Release(IConnection connection);
+        public TCPConnectionAdapter(IConnection connection, IConnectionPool connectionPool)
+        {
+        }
+
+        public bool Avaliable => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

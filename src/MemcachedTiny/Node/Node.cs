@@ -11,7 +11,6 @@
  */
 
 using MemcachedTiny.Data;
-using System.Collections.Concurrent;
 
 namespace MemcachedTiny.Node
 {
@@ -53,7 +52,7 @@ namespace MemcachedTiny.Node
         /// </summary>
         protected virtual IConnectionPool CreatConnectionPool(IPEndPoint endPoint)
         {
-            return new TCPConnectPool(endPoint);
+            return new TCPConnectionPool(endPoint);
         }
 
         /// <summary>

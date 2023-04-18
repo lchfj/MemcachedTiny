@@ -12,22 +12,65 @@
 
 namespace MemcachedTiny.Node
 {
-    public class TCPConnectPool : IConnectionPool
+    public class TCPConnectionPool : IConnectionPool
     {
-        public TCPConnectPool(IPEndPoint endPoint)
+        private const int MaxPoolSize = 8;
+
+        public bool Avaliable => AllConnectionList.Any(c => c.Avaliable);
+
+        protected virtual IReadOnlyList<IConnection> AllConnectionList { get; }
+        protected virtual ConcurrentQueue<IConnection> AvailablePool { get; }
+
+        public TCPConnectionPool(IPEndPoint endPoint)
         {
+            AllConnectionList = CreatConnection(endPoint);
+            AvailablePool = new ConcurrentQueue<IConnection>(AllConnectionList);
         }
 
-        public bool Avaliable => throw new NotImplementedException();
-
-        public IConnection GetOne()
+        protected virtual IReadOnlyList<IConnection> CreatConnection(IPEndPoint endPoint)
         {
-            throw new NotImplementedException();
+            var list = new List<IConnection>(MaxPoolSize);
+
+            for (var i = 0; i < 8; i++)
+                list.Add(new TcpConnection(endPoint));
+
+            return list.AsReadOnly();
         }
 
-        public void Release(IConnection connect)
+        public virtual IConnection GetOne()
         {
-            throw new NotImplementedException();
+            if (AvailablePool.IsEmpty)
+                return null;
+
+            for (var i = 0; i < AvailablePool.Count; i++)
+            {
+                if (!AvailablePool.TryDequeue(out var connection))
+                {
+                    if (AvailablePool.IsEmpty)
+                        return null;
+                }
+
+                if (connection is null)
+                    continue;
+
+                if (connection.Avaliable)
+                    return new TCPConnectionAdapter(connection, this);
+
+                AvailablePool.Enqueue(connection);
+            }
+
+            return null;
+        }
+
+        public void Release(IConnection connection)
+        {
+            if (connection is null)
+                return;
+
+            if (!AllConnectionList.Any(c => ReferenceEquals(c, connection)))
+                return;
+
+            AvailablePool.Enqueue(connection);
         }
     }
 }
