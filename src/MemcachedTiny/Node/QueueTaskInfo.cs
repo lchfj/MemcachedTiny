@@ -22,18 +22,18 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 请求
         /// </summary>
-        public IRequest Request { get; set; }
+        public virtual IRequest Request { get; set; }
         /// <summary>
         /// 执行请求的连接
         /// </summary>
-        public IConnection Connect { get; set; }
+        public virtual IConnection Connect { get; set; }
         /// <summary>
         /// 取消令牌
         /// </summary>
-        public CancellationToken CancellationToken { get; set; }
+        public virtual CancellationToken CancellationToken { get; set; }
         /// <summary>
         /// 任务对象
         /// </summary>
-        public Task Task { get; set; }
+        public virtual Task Task { get; set; }
     }
 }

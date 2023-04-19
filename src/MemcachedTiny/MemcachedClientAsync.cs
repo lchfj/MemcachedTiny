@@ -18,7 +18,7 @@ namespace MemcachedTiny
     public partial class MemcachedClient : IMemcachedClientAsync
     {
         /// <inheritdoc/>
-        public Task<IResult> SetAsync(string key, int flags, int second, byte[] bytes, CancellationToken cancellation = default)
+        public virtual Task<IResult> SetAsync(string key, int flags, int second, byte[] bytes, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -30,7 +30,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IGetResult> GetAsync(string key, CancellationToken cancellation = default)
+        public virtual Task<IGetResult> GetAsync(string key, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -42,7 +42,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IResult> TouchAsync(string key, uint second, uint cas, CancellationToken cancellation = default)
+        public virtual Task<IResult> TouchAsync(string key, uint second, uint cas, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -54,7 +54,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IGetResult> GetAndTouchAsync(string key, uint second, CancellationToken cancellation = default)
+        public virtual Task<IGetResult> GetAndTouchAsync(string key, uint second, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -66,7 +66,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IResult> DeleteAsync(string key, CancellationToken cancellation = default)
+        public virtual Task<IResult> DeleteAsync(string key, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -78,7 +78,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IFlushResult> FlushAsync(uint second, CancellationToken cancellation = default)
+        public virtual Task<IFlushResult> FlushAsync(uint second, CancellationToken cancellation = default)
         {
             var request = new FlushRequest(second);
 

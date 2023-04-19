@@ -20,7 +20,7 @@ namespace MemcachedTiny.Node
     public class TCPConnectionAdapter : IConnection
     {
         /// <inheritdoc/>
-        public bool Avaliable => Connection.Avaliable;
+        public virtual bool Avaliable => Connection.Avaliable;
 
         /// <summary>
         /// 真实的连接实例
@@ -71,7 +71,7 @@ namespace MemcachedTiny.Node
             if (c is not null)
                 return c.Execute<TC>(request);
 
-            throw new NotImplementedException();
+            throw new ObjectDisposedException(nameof(Connection));
         }
     }
 }

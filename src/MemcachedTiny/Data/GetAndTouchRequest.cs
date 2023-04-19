@@ -31,7 +31,7 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// 新的过期时间
         /// </summary>
-        public uint Second { get; }
+        public virtual uint Second { get; }
 
         /// <summary>
         /// 创建实例

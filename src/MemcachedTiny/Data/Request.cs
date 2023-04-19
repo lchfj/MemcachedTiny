@@ -27,19 +27,19 @@ namespace MemcachedTiny.Data
         public abstract byte Opcode { get; }
 
         /// <inheritdoc/>
-        public short KeyLength => Convert.ToInt16(Key?.Length ?? 0);
+        public virtual short KeyLength => Convert.ToInt16(Key?.Length ?? 0);
 
         /// <inheritdoc/>
-        public byte ExtrasLength => Convert.ToByte(Extras?.Length ?? 0);
+        public virtual byte ExtrasLength => Convert.ToByte(Extras?.Length ?? 0);
 
         /// <inheritdoc/>
-        public byte DataType => 0;
+        public virtual byte DataType => 0;
 
         /// <inheritdoc/>
-        public int TotalBodyLength => ExtrasLength + KeyLength + (Value?.Length ?? 0);
+        public virtual int TotalBodyLength => ExtrasLength + KeyLength + (Value?.Length ?? 0);
 
         /// <inheritdoc/>
-        public short VbucketIdOrStatus => 0;
+        public virtual short VbucketIdOrStatus => 0;
 
         /// <inheritdoc/>
         public virtual int Opaque { get; set; }

@@ -18,40 +18,40 @@ namespace MemcachedTiny.Data
     public class Response : IResponse
     {
         /// <inheritdoc/>
-        public byte Magic { get; protected set; }
+        public virtual byte Magic { get; protected set; }
 
         /// <inheritdoc/>
-        public byte Opcode { get; protected set; }
+        public virtual byte Opcode { get; protected set; }
 
         /// <inheritdoc/>
-        public short KeyLength { get; protected set; }
+        public virtual short KeyLength { get; protected set; }
 
         /// <inheritdoc/>
-        public byte ExtrasLength { get; protected set; }
+        public virtual byte ExtrasLength { get; protected set; }
 
         /// <inheritdoc/>
-        public byte DataType { get; protected set; }
+        public virtual byte DataType { get; protected set; }
 
         /// <inheritdoc/>
-        public int TotalBodyLength { get; protected set; }
+        public virtual int TotalBodyLength { get; protected set; }
 
         /// <inheritdoc/>
-        public short VbucketIdOrStatus { get; protected set; }
+        public virtual short VbucketIdOrStatus { get; protected set; }
 
         /// <inheritdoc/>
-        public int Opaque { get; protected set; }
+        public virtual int Opaque { get; protected set; }
 
         /// <inheritdoc/>
-        public long CAS { get; protected set; }
+        public virtual long CAS { get; protected set; }
 
         /// <inheritdoc/>
-        public byte[] Extras { get; protected set; }
+        public virtual byte[] Extras { get; protected set; }
 
         /// <inheritdoc/>
-        public string Key { get; protected set; }
+        public virtual string Key { get; protected set; }
 
         /// <inheritdoc/>
-        public byte[] Value { get; protected set; }
+        public virtual byte[] Value { get; protected set; }
 
         /// <summary>
         /// 数据长度
@@ -60,7 +60,7 @@ namespace MemcachedTiny.Data
 
 
         /// <inheritdoc/>
-        public void SetHeader(byte[] header)
+        public virtual void SetHeader(byte[] header)
         {
             if (header.Length != 24)
                 throw new ArgumentException("length", nameof(header));
@@ -78,11 +78,30 @@ namespace MemcachedTiny.Data
 
 
         /// <inheritdoc/>
-        public void SetBody(byte[] extras, byte[] keys, byte[] values)
+        public virtual void SetBody(byte[] extras, byte[] keys, byte[] values)
         {
             Extras = extras;
             Key = Encoding.ASCII.GetString(keys);
             Value = values;
         }
+
+        /// <summary>
+        /// 一个标识为错误的响应数据
+        /// </summary>
+        public static Response Error => new()
+        {
+            CAS = 0,
+            DataType = 0,
+            Extras = Array.Empty<byte>(),
+            ExtrasLength = 0,
+            Key = string.Empty,
+            KeyLength = 0,
+            Magic = 0x81,
+            Opaque = int.MinValue,
+            Opcode = 0xFF,
+            TotalBodyLength = 0,
+            Value = Array.Empty<byte>(),
+            VbucketIdOrStatus = 0x0086
+        };
     }
 }

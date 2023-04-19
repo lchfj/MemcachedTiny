@@ -25,7 +25,7 @@ namespace MemcachedTiny.Util
         /// <summary>
         /// UInt型哈希值
         /// </summary>
-        public uint UIntHashCode { get; private set; }
+        public virtual uint UIntHashCode { get; private set; }
 
         /// <inheritdoc/>
         public override void Initialize()

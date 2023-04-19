@@ -19,7 +19,7 @@ namespace MemcachedTiny
     {
 
         /// <inheritdoc/>
-        public IResult Set(string key, int flags, int second, byte[] bytes)
+        public virtual IResult Set(string key, int flags, int second, byte[] bytes)
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);
@@ -29,7 +29,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IGetResult Get(string key)
+        public virtual IGetResult Get(string key)
         {
             key = AssertKey(key);
 
@@ -41,7 +41,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IResult Touch(string key, uint second, uint cas)
+        public virtual IResult Touch(string key, uint second, uint cas)
         {
             key = AssertKey(key);
 
@@ -53,7 +53,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IGetResult GetAndTouch(string key, uint second)
+        public virtual IGetResult GetAndTouch(string key, uint second)
         {
             key = AssertKey(key);
 
@@ -65,7 +65,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IResult Delete(string key)
+        public virtual IResult Delete(string key)
         {
             key = AssertKey(key);
 
@@ -77,7 +77,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IFlushResult Flush(uint second)
+        public virtual IFlushResult Flush(uint second)
         {
             var request = new FlushRequest(second);
 

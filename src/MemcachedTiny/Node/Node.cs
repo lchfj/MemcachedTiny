@@ -98,7 +98,7 @@ namespace MemcachedTiny.Node
         }
 
         /// <inheritdoc/>
-        public Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
+        public virtual Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
         {
             var tInfo = CreatTask<TI, TC>(request, cancellation, out var task);
 

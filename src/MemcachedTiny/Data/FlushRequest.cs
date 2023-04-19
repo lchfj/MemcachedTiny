@@ -37,7 +37,7 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// 清空时间
         /// </summary>
-        public uint Second { get; }
+        public virtual uint Second { get; }
 
         /// <summary>
         /// 创建实例

@@ -74,7 +74,7 @@ namespace MemcachedTiny.Node
         }
 
         /// <inheritdoc/>
-        public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
+        public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
             ClearStream();
             SendRequest(request);

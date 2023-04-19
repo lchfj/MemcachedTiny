@@ -20,7 +20,7 @@ namespace MemcachedTiny.Node
     public class KeyHashFNV1a : IKeyHash
     {
         /// <inheritdoc/>
-        public uint Hash(string key)
+        public virtual uint Hash(string key)
         {
             var data = Encoding.ASCII.GetBytes(key);
 

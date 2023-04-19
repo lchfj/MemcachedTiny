@@ -20,10 +20,10 @@ namespace MemcachedTiny.Result
         /// <summary>
         /// 各个节点的响应结果
         /// </summary>
-        public IReadOnlyList<IResult> NodeResultList { get; }
+        public virtual IReadOnlyList<IResult> NodeResultList { get; }
 
         /// <inheritdoc/>
-        public bool Success => NodeResultList?.All(r => r.Success) ?? false;
+        public virtual bool Success => NodeResultList?.All(r => r.Success) ?? false;
 
         /// <summary>
         /// 创建实例

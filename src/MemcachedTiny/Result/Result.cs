@@ -37,7 +37,7 @@ namespace MemcachedTiny.Result
         /// <inheritdoc/>
         public virtual void Read(IPacketStructure response)
         {
-            Response = response ?? throw new NotImplementedException();
+            Response = response ?? throw new ArgumentNullException(nameof(response));
         }
     }
 }
