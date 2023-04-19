@@ -10,23 +10,47 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+
 namespace MemcachedTiny.Node
 {
+    /// <summary>
+    /// TCP 连接池
+    /// </summary>
     public class TCPConnectionPool : IConnectionPool
     {
-        private const int MaxPoolSize = 8;
+        /// <summary>
+        /// 连接池大小
+        /// </summary>
+        protected const int MaxPoolSize = 8;
 
+        /// <inheritdoc/>
         public bool Avaliable => AllConnectionList.Any(c => c.Avaliable);
 
+        /// <summary>
+        /// 所有的连接
+        /// </summary>
         protected virtual IReadOnlyList<IConnection> AllConnectionList { get; }
+        /// <summary>
+        /// 可以使用的连接
+        /// </summary>
         protected virtual ConcurrentQueue<IConnection> AvailablePool { get; }
 
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="endPoint">连接点</param>
         public TCPConnectionPool(IConnectionEndPoint endPoint)
         {
             AllConnectionList = CreatConnection(endPoint);
             AvailablePool = new ConcurrentQueue<IConnection>(AllConnectionList);
         }
 
+        /// <summary>
+        /// 创建所有连接
+        /// </summary>
+        /// <param name="endPoint">连接点</param>
+        /// <returns></returns>
         protected virtual IReadOnlyList<IConnection> CreatConnection(IConnectionEndPoint endPoint)
         {
             var list = new List<IConnection>(MaxPoolSize);
@@ -37,6 +61,10 @@ namespace MemcachedTiny.Node
             return list.AsReadOnly();
         }
 
+        /// <summary>
+        /// 获取一个可以使用的连接
+        /// </summary>
+        /// <returns></returns>
         public virtual IConnection GetOne()
         {
             if (AvailablePool.IsEmpty)
@@ -61,13 +89,19 @@ namespace MemcachedTiny.Node
 
             return null;
         }
-
+        /// <summary>
+        /// 释放一个连接到连接池中
+        /// </summary>
+        /// <param name="connection">要释放的连接</param>
         public void Release(IConnection connection)
         {
             if (connection is null)
                 return;
 
             if (!AllConnectionList.Any(c => ReferenceEquals(c, connection)))
+                return;
+
+            if (AvailablePool.Any(c => ReferenceEquals(c, connection)))
                 return;
 
             AvailablePool.Enqueue(connection);

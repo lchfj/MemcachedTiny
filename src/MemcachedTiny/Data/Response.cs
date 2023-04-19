@@ -10,45 +10,79 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+using System.Text;
+
 namespace MemcachedTiny.Data
 {
     public class Response : IResponse
     {
-        private ResponseHeader header;
-        private byte[] extra;
-        private byte[] key;
-        private byte[] value;
+        /// <inheritdoc/>
+        public byte Magic { get; protected set; }
 
-        public Response(ResponseHeader header, byte[] extra, byte[] key, byte[] value)
+        /// <inheritdoc/>
+        public byte Opcode { get; protected set; }
+
+        /// <inheritdoc/>
+        public short KeyLength { get; protected set; }
+
+        /// <inheritdoc/>
+        public byte ExtrasLength { get; protected set; }
+
+        /// <inheritdoc/>
+        public byte DataType { get; protected set; }
+
+        /// <inheritdoc/>
+        public int TotalBodyLength { get; protected set; }
+
+        /// <inheritdoc/>
+        public short VbucketIdOrStatus { get; protected set; }
+
+        /// <inheritdoc/>
+        public int Opaque { get; protected set; }
+
+        /// <inheritdoc/>
+        public long CAS { get; protected set; }
+
+        /// <inheritdoc/>
+        public byte[] Extras { get; protected set; }
+
+        /// <inheritdoc/>
+        public string Key { get; protected set; }
+
+        /// <inheritdoc/>
+        public byte[] Value { get; protected set; }
+
+        /// <summary>
+        /// 数据长度
+        /// </summary>
+        public virtual int ValueLength => TotalBodyLength - ExtrasLength - KeyLength;
+
+
+        /// <inheritdoc/>
+        public void SetHeader(byte[] header)
         {
-            this.header = header;
-            this.extra = extra;
-            this.key = key;
-            this.value = value;
+            if (header.Length != 24)
+                throw new ArgumentException("length", nameof(header));
+
+            Magic = header[0];
+            Opcode = header[1];
+            KeyLength = MBitConverter.ReadShort(header, 2);
+            ExtrasLength = header[4];
+            DataType = header[5];
+            VbucketIdOrStatus = MBitConverter.ReadShort(header, 6);
+            TotalBodyLength = MBitConverter.ReadInt(header, 8);
+            Opaque = MBitConverter.ReadInt(header, 12);
+            CAS = MBitConverter.ReadLong(header, 16);
         }
 
-        public byte Magic => throw new NotImplementedException();
 
-        public byte Opcode => throw new NotImplementedException();
-
-        public ushort KeyLength => throw new NotImplementedException();
-
-        public byte ExtrasLength => throw new NotImplementedException();
-
-        public byte DataType => throw new NotImplementedException();
-
-        public uint TotalBodyLength => throw new NotImplementedException();
-
-        public ushort VbucketIdOrStatus => throw new NotImplementedException();
-
-        public uint Opaque => throw new NotImplementedException();
-
-        public uint CAS => throw new NotImplementedException();
-
-        public byte[] Extras => throw new NotImplementedException();
-
-        public string Key => throw new NotImplementedException();
-
-        public byte[] Value => throw new NotImplementedException();
+        /// <inheritdoc/>
+        public void SetBody(byte[] extras, byte[] keys, byte[] values)
+        {
+            Extras = extras;
+            Key = Encoding.ASCII.GetString(keys);
+            Value = values;
+        }
     }
 }

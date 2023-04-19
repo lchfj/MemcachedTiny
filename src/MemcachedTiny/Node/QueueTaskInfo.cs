@@ -14,11 +14,26 @@ using MemcachedTiny.Data;
 
 namespace MemcachedTiny.Node
 {
+    /// <summary>
+    /// 队列中的任务信息
+    /// </summary>
     public class QueueTaskInfo
     {
+        /// <summary>
+        /// 请求
+        /// </summary>
         public IRequest Request { get; set; }
+        /// <summary>
+        /// 执行请求的连接
+        /// </summary>
         public IConnection Connect { get; set; }
+        /// <summary>
+        /// 取消令牌
+        /// </summary>
         public CancellationToken CancellationToken { get; set; }
+        /// <summary>
+        /// 任务对象
+        /// </summary>
         public Task Task { get; set; }
     }
 }

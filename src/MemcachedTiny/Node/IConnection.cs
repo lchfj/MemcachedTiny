@@ -14,10 +14,22 @@ using MemcachedTiny.Data;
 
 namespace MemcachedTiny.Node
 {
+    /// <summary>
+    /// 一个连接
+    /// </summary>
     public interface IConnection : IDisposable
     {
+        /// <summary>
+        /// 连接是否可用
+        /// </summary>
         bool Avaliable { get; }
 
+        /// <summary>
+        /// 执行请求
+        /// </summary>
+        /// <typeparam name="TC">结果类型</typeparam>
+        /// <param name="request">请求</param>
+        /// <returns>返回执行结果</returns>
         TC Execute<TC>(IRequest request) where TC : IResponseReader, new();
     }
 }

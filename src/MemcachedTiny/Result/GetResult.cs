@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Util;
+
 namespace MemcachedTiny.Result
 {
     /// <summary>
@@ -18,9 +20,9 @@ namespace MemcachedTiny.Result
     public class GetResult : Result, IGetResult
     {
         /// <inheritdoc/>
-        public uint Flags => throw new NotImplementedException();
+        public int Flags => Response.ExtrasLength >= 4 ? MBitConverter.ReadInt(Response.Extras, 0) : 0;
 
         /// <inheritdoc/>
-        public byte[] Value => throw new NotImplementedException();
+        public byte[] Value => Response.Value;
     }
 }

@@ -29,11 +29,11 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// 数据类型
         /// </summary>
-        public uint Flags { get; }
+        public virtual int Flags { get; }
         /// <summary>
         /// 过期时间
         /// </summary>
-        public uint Second { get; }
+        public virtual int Second { get; }
 
         /// <summary>
         /// 创建实例
@@ -42,7 +42,7 @@ namespace MemcachedTiny.Data
         /// <param name="flag">数据类型</param>
         /// <param name="second">过期时间</param>
         /// <param name="bytes">数据</param>
-        public SetRequest(string key, uint flag, uint second, byte[] bytes) : base(key)
+        public SetRequest(string key, int flag, int second, byte[] bytes) : base(key)
         {
             Value = bytes;
             Second = second;

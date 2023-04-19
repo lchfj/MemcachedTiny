@@ -28,7 +28,7 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// Length in bytes of the text key that follows the command extras
         /// </summary>
-        ushort KeyLength { get; }
+        short KeyLength { get; }
         /// <summary>
         /// Length in bytes of the command extras
         /// </summary>
@@ -40,19 +40,19 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// Length in bytes of extra + key + value
         /// </summary>
-        uint TotalBodyLength { get; }
+        int TotalBodyLength { get; }
         /// <summary>
         /// vbucket id in request  or Status in response
         /// </summary>
-        ushort VbucketIdOrStatus { get; }
+        short VbucketIdOrStatus { get; }
         /// <summary>
         /// Will be copied back to you in the response
         /// </summary>
-        uint Opaque { get; }
+        int Opaque { get; }
         /// <summary>
         /// Data version check
         /// </summary>
-        uint CAS { get; }
+        long CAS { get; }
 
         /// <summary>
         /// COMMAND-SPECIFIC EXTRAS

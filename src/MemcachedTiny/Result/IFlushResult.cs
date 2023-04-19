@@ -10,11 +10,16 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Node
+namespace MemcachedTiny.Result
 {
-    public interface IConnectionEndPoint
+    /// <summary>
+    /// 清空操作结果
+    /// </summary>
+    public interface IFlushResult
     {
-        string Host { get; }
-        int Port { get; }
+        /// <summary>
+        /// 操作是否成功
+        /// </summary>
+        bool Success { get; }
     }
 }

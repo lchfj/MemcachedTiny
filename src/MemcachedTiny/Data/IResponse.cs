@@ -12,7 +12,20 @@
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// Memcache 响应数据
+    /// </summary>
     public interface IResponse : IPacketStructure
     {
+        /// <summary>
+        /// 设定头部数据
+        /// </summary>
+        /// <param name="header"></param>
+        void SetHeader(byte[] header);
+
+        /// <summary>
+        /// 设定内容数据
+        /// </summary>
+        void SetBody(byte[] extras, byte[] keys, byte[] values);
     }
 }

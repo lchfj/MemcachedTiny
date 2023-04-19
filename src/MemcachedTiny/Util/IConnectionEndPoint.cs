@@ -10,44 +10,20 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using MemcachedTiny.Util;
-
-namespace MemcachedTiny.Data
+namespace MemcachedTiny.Util
 {
     /// <summary>
-    /// 更新过期时间请求
+    /// 连接点
     /// </summary>
-    public class TouchRequest : KeyRequest
+    public interface IConnectionEndPoint
     {
-
-        /// <inheritdoc/>
-        public override byte Opcode => 0x1c;
-
-        /// <inheritdoc/>
-        public override long CAS { get; }
-
-        /// <inheritdoc/>
-        public override byte[] Extras => MBitConverter.GetByte(Second);
-
-        /// <inheritdoc/>
-        public override byte[] Value => Array.Empty<byte>();
-
-
         /// <summary>
-        /// 新的过期时间
+        /// 主机名
         /// </summary>
-        public virtual uint Second { get; }
-
+        string Host { get; }
         /// <summary>
-        /// 创建实例
+        /// 端口
         /// </summary>
-        /// <param name="key">缓存键</param>
-        /// <param name="second">新的过期时间</param>
-        /// <param name="cas">数据版本</param>
-        public TouchRequest(string key, uint second, uint cas) : base(key)
-        {
-            Second = second;
-            CAS = cas;
-        }
+        int Port { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace MemcachedTiny
         /// <param name="flags">数据标识</param>
         /// <param name="second">缓存时间（秒）</param>
         /// <param name="bytes">缓存数据</param>
-        IResult Set(string key, uint flags, uint second, byte[] bytes);
+        IResult Set(string key, int flags, int second, byte[] bytes);
 
         /// <summary>
         /// 获取一个缓存值（如果存在的话）
@@ -61,6 +61,6 @@ namespace MemcachedTiny
         /// 清空所有缓存
         /// </summary>
         /// <param name="second">清空缓存的时间</param>
-        IResult Flush(uint second);
+        IFlushResult Flush(uint second);
     }
 }

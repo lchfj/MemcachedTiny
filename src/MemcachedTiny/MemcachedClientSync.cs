@@ -19,7 +19,7 @@ namespace MemcachedTiny
     {
 
         /// <inheritdoc/>
-        public IResult Set(string key, uint flags, uint second, byte[] bytes)
+        public IResult Set(string key, int flags, int second, byte[] bytes)
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);
@@ -77,7 +77,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public IResult Flush(uint second)
+        public IFlushResult Flush(uint second)
         {
             var request = new FlushRequest(second);
 
@@ -89,10 +89,7 @@ namespace MemcachedTiny
                 resultList[i] = node.Execute<Result.Result>(request);
             }
 
-            return new Result.Result()
-            {
-                Success = resultList.All(r => r.Success)
-            };
+            return new FlushResult(resultList);
         }
     }
 }

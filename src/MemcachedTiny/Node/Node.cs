@@ -11,6 +11,7 @@
  */
 
 using MemcachedTiny.Data;
+using MemcachedTiny.Util;
 
 namespace MemcachedTiny.Node
 {

@@ -10,20 +10,28 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Data
+namespace MemcachedTiny.Result
 {
-    public class ResponseHeader
+    /// <summary>
+    /// 清空缓存结果
+    /// </summary>
+    public class FlushResult : IFlushResult
     {
-        private byte[] headerByte;
+        /// <summary>
+        /// 各个节点的响应结果
+        /// </summary>
+        public IReadOnlyList<IResult> NodeResultList { get; }
 
-        public ResponseHeader(byte[] headerByte)
+        /// <inheritdoc/>
+        public bool Success => NodeResultList?.All(r => r.Success) ?? false;
+
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="nodeResultList">所有节点结果</param>
+        public FlushResult(IReadOnlyList<IResult> nodeResultList)
         {
-            this.headerByte = headerByte;
+            NodeResultList = nodeResultList;
         }
-
-        public int ExtraLength { get; }
-        public int KeyLength { get; }
-        public int TotalBody { get; }
-        public int ValueLength => TotalBody - ExtraLength - KeyLength;
     }
 }

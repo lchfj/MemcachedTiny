@@ -11,25 +11,48 @@
  */
 
 using MemcachedTiny.Data;
+using MemcachedTiny.Util;
 using System.Net.Sockets;
 
 namespace MemcachedTiny.Node
 {
-    internal class TcpConnection : IConnection
+    /// <summary>
+    /// TCP连接
+    /// </summary>
+    public class TcpConnection : IConnection
     {
+        /// <summary>
+        /// 响应头长度
+        /// </summary>
         protected const int ResponseHeaderLength = 24;
 
+        /// <inheritdoc/>
         public virtual bool Avaliable => TcpClient?.Connected ?? false;
 
+        /// <summary>
+        /// 一个TPC连接
+        /// </summary>
         protected virtual TcpClient TcpClient { get; }
+        /// <summary>
+        /// 网络流
+        /// </summary>
         protected virtual NetworkStream Stream { get; }
 
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="endPoint"></param>
         public TcpConnection(IConnectionEndPoint endPoint)
         {
             TcpClient = CreatTcpClient(endPoint);
             Stream = TcpClient.GetStream();
         }
 
+        /// <summary>
+        /// 创建以一个TCP连接
+        /// </summary>
+        /// <param name="endPoint"></param>
+        /// <returns></returns>
         protected virtual TcpClient CreatTcpClient(IConnectionEndPoint endPoint)
         {
             var tcp = new TcpClient();
@@ -41,6 +64,7 @@ namespace MemcachedTiny.Node
             return tcp;
         }
 
+        /// <inheritdoc/>
         public virtual void Dispose()
         {
             Stream.Close();
@@ -49,6 +73,7 @@ namespace MemcachedTiny.Node
             TcpClient.Dispose();
         }
 
+        /// <inheritdoc/>
         public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
             ClearStream();
@@ -64,27 +89,39 @@ namespace MemcachedTiny.Node
             return tc;
         }
 
-
-        protected virtual Response ReadResponse()
+        /// <summary>
+        /// 读取响应
+        /// </summary>
+        /// <returns></returns>
+        protected virtual IResponse ReadResponse()
         {
             var headerByte = ReadLength(ResponseHeaderLength);
-            var header = new ResponseHeader(headerByte);
+            var response = new Response();
 
-            var extra = ReadLength(header.ExtraLength);
-            var key = ReadLength(header.KeyLength);
-            var value = ReadLength(header.ValueLength);
+            response.SetHeader(headerByte);
 
-            return new Response(header, extra, key, value);
+            var extra = ReadLength(response.ExtrasLength);
+            var key = ReadLength(response.KeyLength);
+            var value = ReadLength(response.ValueLength);
+
+
+            response.SetBody(extra, key, value);
+
+            return response;
         }
 
+        /// <summary>
+        /// 发送请求
+        /// </summary>
+        /// <param name="request">请求内容</param>
         protected virtual void SendRequest(IRequest request)
         {
-            using var sendStream = request.GetStream();
-
-            sendStream.Position = 0;
-            sendStream.CopyTo(Stream);
+            request.WriteToStream(Stream);
         }
 
+        /// <summary>
+        /// 清空流中的响应
+        /// </summary>
         protected virtual void ClearStream()
         {
             while (true)
@@ -98,10 +135,17 @@ namespace MemcachedTiny.Node
             }
         }
 
+        /// <summary>
+        /// 从流中读取指定长度的数据
+        /// </summary>
+        /// <param name="length">长度</param>
+        /// <returns></returns>
+        /// <exception cref="IOException">流已断开</exception>
         protected virtual byte[] ReadLength(int length)
         {
-            if (length <= 0)
+            if (length == 0)
                 return Array.Empty<byte>();
+
 
             var buffer = new byte[length];
             var position = 0;

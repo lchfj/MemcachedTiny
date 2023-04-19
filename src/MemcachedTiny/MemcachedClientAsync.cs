@@ -18,7 +18,7 @@ namespace MemcachedTiny
     public partial class MemcachedClient : IMemcachedClientAsync
     {
         /// <inheritdoc/>
-        public Task<IResult> SetAsync(string key, uint flags, uint second, byte[] bytes, CancellationToken cancellation = default)
+        public Task<IResult> SetAsync(string key, int flags, int second, byte[] bytes, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -78,7 +78,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public Task<IResult> FlushAsync(uint second, CancellationToken cancellation = default)
+        public Task<IFlushResult> FlushAsync(uint second, CancellationToken cancellation = default)
         {
             var request = new FlushRequest(second);
 
@@ -92,12 +92,8 @@ namespace MemcachedTiny
 
             return Task.WhenAll(resultList).ContinueWith(r =>
             {
-                var result = new Result.Result()
-                {
-                    Success = r.Result.All(r => r.Success)
-                };
-
-                return (IResult)result;
+                var result = new FlushResult(r.Result);
+                return (IFlushResult)result;
             });
         }
     }

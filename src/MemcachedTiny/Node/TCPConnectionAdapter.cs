@@ -14,24 +14,45 @@ using MemcachedTiny.Data;
 
 namespace MemcachedTiny.Node
 {
+    /// <summary>
+    /// 用于包装连接池中的连接
+    /// </summary>
     public class TCPConnectionAdapter : IConnection
     {
+        /// <inheritdoc/>
         public bool Avaliable => Connection.Avaliable;
 
+        /// <summary>
+        /// 真实的连接实例
+        /// </summary>
         protected virtual IConnection Connection { get; set; }
+        /// <summary>
+        /// 对应的连接池
+        /// </summary>
         protected virtual IConnectionPool ConnectionPool { get; }
 
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="connection">真实的连接</param>
+        /// <param name="connectionPool">连接池</param>
         public TCPConnectionAdapter(IConnection connection, IConnectionPool connectionPool)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             ConnectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
         }
 
+        /// <summary>
+        /// 析构函数
+        /// </summary>
         ~TCPConnectionAdapter()
         {
             Dispose();
         }
 
+        /// <summary>
+        /// 释放连接到连接池中
+        /// </summary>
         public virtual void Dispose()
         {
             var connection = Connection;
@@ -43,6 +64,7 @@ namespace MemcachedTiny.Node
             ConnectionPool.Release(connection);
         }
 
+        /// <inheritdoc/>
         public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
             var c = Connection;

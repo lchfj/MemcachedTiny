@@ -21,6 +21,6 @@ namespace MemcachedTiny.Data
         /// 读取结果
         /// </summary>
         /// <param name="response">Memcached 原始结果</param>
-        void Read(IResponse response);
+        void Read(IPacketStructure response);
     }
 }

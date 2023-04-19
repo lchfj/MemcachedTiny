@@ -27,7 +27,7 @@ namespace MemcachedTiny.Data
         public abstract byte Opcode { get; }
 
         /// <inheritdoc/>
-        public ushort KeyLength => Convert.ToUInt16(Key?.Length ?? 0);
+        public short KeyLength => Convert.ToInt16(Key?.Length ?? 0);
 
         /// <inheritdoc/>
         public byte ExtrasLength => Convert.ToByte(Extras?.Length ?? 0);
@@ -36,16 +36,16 @@ namespace MemcachedTiny.Data
         public byte DataType => 0;
 
         /// <inheritdoc/>
-        public uint TotalBodyLength => Convert.ToUInt32(ExtrasLength + KeyLength + (Value?.Length ?? 0));
+        public int TotalBodyLength => ExtrasLength + KeyLength + (Value?.Length ?? 0);
 
         /// <inheritdoc/>
-        public ushort VbucketIdOrStatus => 0;
+        public short VbucketIdOrStatus => 0;
 
         /// <inheritdoc/>
-        public virtual uint Opaque { get; set; }
+        public virtual int Opaque { get; set; }
 
         /// <inheritdoc/>
-        public virtual uint CAS { get; }
+        public virtual long CAS { get; }
 
         /// <inheritdoc/>
         public abstract byte[] Extras { get; }
@@ -57,10 +57,9 @@ namespace MemcachedTiny.Data
         public abstract byte[] Value { get; }
 
         /// <inheritdoc/>
-        public virtual Stream GetStream()
+        public virtual void WriteToStream(Stream stream)
         {
-            var memoryStream = new MemoryStream();
-            using var writer = new BinaryWriter(memoryStream, Encoding.ASCII, true);
+            using var writer = new BinaryWriter(stream, Encoding.ASCII, true);
 
             writer.Write(Magic);
             writer.Write(Opcode);
@@ -79,7 +78,6 @@ namespace MemcachedTiny.Data
             if (Value is not null)
                 writer.Write(Value);
 
-            return memoryStream;
         }
     }
 }

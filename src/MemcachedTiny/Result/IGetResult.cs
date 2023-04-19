@@ -20,7 +20,7 @@ namespace MemcachedTiny.Result
         /// <summary>
         /// 数据标识
         /// </summary>
-        uint Flags { get; }
+        int Flags { get; }
 
         /// <summary>
         /// 获取到的数据

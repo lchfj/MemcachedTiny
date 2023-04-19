@@ -10,11 +10,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace MemcachedTiny.Node
+namespace MemcachedTiny.Util
 {
+    /// <summary>
+    /// 连接点
+    /// </summary>
     public class ConnectionEndPoint : IConnectionEndPoint
     {
-        public ConnectionEndPoint(string host, int port)
+        /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="host">主机名</param>
+        /// <param name="port">端口好</param>
+        protected ConnectionEndPoint(string host, int port)
         {
             if (string.IsNullOrWhiteSpace(host))
                 throw new ArgumentNullException(nameof(host));
@@ -26,9 +34,21 @@ namespace MemcachedTiny.Node
             Port = port;
         }
 
+        /// <summary>
+        /// 主机名
+        /// </summary>
         public virtual string Host { get; }
+        /// <summary>
+        /// 端口号
+        /// </summary>
         public virtual int Port { get; }
 
+        /// <summary>
+        /// 尝试从字符串中获得一个
+        /// </summary>
+        /// <param name="connectString">字符串</param>
+        /// <param name="endPoint">结果</param>
+        /// <returns></returns>
         public static bool TryParse(string connectString, out ConnectionEndPoint endPoint)
         {
             endPoint = null;

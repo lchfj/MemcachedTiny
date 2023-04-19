@@ -14,7 +14,7 @@ namespace MemcachedTiny.Util
 {
     public static class MBitConverter
     {
-        public static byte[] GetByte(ushort value)
+        public static byte[] GetByte(short value)
         {
             var bytes = BitConverter.GetBytes(value);
 
@@ -24,7 +24,7 @@ namespace MemcachedTiny.Util
             return bytes;
         }
 
-        public static byte[] GetByte(uint value)
+        public static byte[] GetByte(int value)
         {
             var bytes = BitConverter.GetBytes(value);
 
@@ -32,6 +32,26 @@ namespace MemcachedTiny.Util
                 Array.Reverse(bytes);
 
             return bytes;
+        }
+
+        internal static byte[] GetByte(long cAS)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static short ReadShort(byte[] header, int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static int ReadInt(byte[] header, int v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static long ReadLong(byte[] header, int v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

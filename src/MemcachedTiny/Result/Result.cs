@@ -19,17 +19,25 @@ namespace MemcachedTiny.Result
     /// </summary>
     public class Result : IResult, IResponseReader
     {
-        /// <inheritdoc/>
-        public bool Success => throw new NotImplementedException();
+        /// <summary>
+        /// 原始相应数据
+        /// </summary>
+        public virtual IPacketStructure Response { get; protected set; }
 
         /// <inheritdoc/>
-        public uint CAS => throw new NotImplementedException();
+        public virtual short Status => Response.VbucketIdOrStatus;
+
+        /// <inheritdoc/>
+        public virtual bool Success => Response.VbucketIdOrStatus == 0x0000;
+
+        /// <inheritdoc/>
+        public virtual long CAS => Response.CAS;
 
 
         /// <inheritdoc/>
-        public void Read(IResponse response)
+        public virtual void Read(IPacketStructure response)
         {
-            throw new NotImplementedException();
+            Response = response ?? throw new NotImplementedException();
         }
     }
 }

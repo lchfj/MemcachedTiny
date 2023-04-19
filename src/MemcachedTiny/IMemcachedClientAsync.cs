@@ -28,7 +28,7 @@ namespace MemcachedTiny
         /// <param name="bytes">缓存数据</param>
         /// <returns>一个代表异步任务的<see cref="Task" /></returns>
         /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
-        Task<IResult> SetAsync(string key, uint flags, uint second, byte[] bytes, CancellationToken cancellation = default);
+        Task<IResult> SetAsync(string key, int flags, int second, byte[] bytes, CancellationToken cancellation = default);
 
         /// <summary>
         /// 获取一个缓存值（如果存在的话）
@@ -71,6 +71,6 @@ namespace MemcachedTiny
         /// <param name="second">清空缓存的时间</param>
         /// <returns>一个代表异步任务的<see cref="Task" /></returns>
         /// <param name="cancellation">（可选）一个标识操作取消的<see cref="CancellationToken"/></param>
-        Task<IResult> FlushAsync(uint second, CancellationToken cancellation = default);
+        Task<IFlushResult> FlushAsync(uint second, CancellationToken cancellation = default);
     }
 }
