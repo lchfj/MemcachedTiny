@@ -12,46 +12,93 @@
 
 namespace MemcachedTiny.Util
 {
+    /// <summary>
+    /// Memcached友好的二进制转换器（大端序）
+    /// </summary>
     public static class MBitConverter
     {
+        /// <summary>
+        /// 是否是小端序
+        /// </summary>
+        public static bool IsLittleEndian = BitConverter.GetBytes(1)[0] == 1;
+
+        /// <summary>
+        /// 获取字节数组
+        /// </summary>
         public static byte[] GetByte(short value)
         {
             var bytes = BitConverter.GetBytes(value);
 
-            if (BitConverter.IsLittleEndian)
+            if (IsLittleEndian)
                 Array.Reverse(bytes);
 
             return bytes;
         }
 
+        /// <summary>
+        /// 获取字节数组
+        /// </summary>
         public static byte[] GetByte(int value)
         {
             var bytes = BitConverter.GetBytes(value);
 
-            if (BitConverter.IsLittleEndian)
+            if (IsLittleEndian)
                 Array.Reverse(bytes);
 
             return bytes;
         }
 
-        internal static byte[] GetByte(long cAS)
+        /// <summary>
+        /// 获取字节数组
+        /// </summary>
+        public static byte[] GetByte(long value)
         {
-            throw new NotImplementedException();
+            var bytes = BitConverter.GetBytes(value);
+
+            if (IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
         }
 
-        internal static short ReadShort(byte[] header, int v)
+        private static byte[] GetByteArray(byte[] bytes, int start, int length)
         {
-            throw new NotImplementedException();
+            var result = new byte[length];
+
+            for (var i = 0; i < length; i++)
+                result[length - 1 - i] = bytes[start + i];
+
+            if (!IsLittleEndian)
+                Array.Reverse(result);
+
+            return result;
         }
 
-        internal static int ReadInt(byte[] header, int v)
+        /// <summary>
+        /// 读取数字
+        /// </summary>
+        public static short ReadShort(byte[] bytes, int start)
         {
-            throw new NotImplementedException();
+            var array = GetByteArray(bytes, start, 2);
+            return BitConverter.ToInt16(array, 0);
         }
 
-        internal static long ReadLong(byte[] header, int v)
+        /// <summary>
+        /// 读取数字
+        /// </summary>
+        public static int ReadInt(byte[] bytes, int start)
         {
-            throw new NotImplementedException();
+            var array = GetByteArray(bytes, start, 4);
+            return BitConverter.ToInt32(array, 0);
+        }
+
+        /// <summary>
+        /// 读取数字
+        /// </summary>
+        public static long ReadLong(byte[] bytes, int start)
+        {
+            var array = GetByteArray(bytes, start, 8);
+            return BitConverter.ToInt64(array, 0);
         }
     }
 }

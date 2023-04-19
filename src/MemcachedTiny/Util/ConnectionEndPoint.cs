@@ -17,6 +17,12 @@ namespace MemcachedTiny.Util
     /// </summary>
     public class ConnectionEndPoint : IConnectionEndPoint
     {
+        /// <inheritdoc/>
+        public virtual string Host { get; }
+
+        /// <inheritdoc/>
+        public virtual int Port { get; }
+
         /// <summary>
         /// 创建实例
         /// </summary>
@@ -33,15 +39,6 @@ namespace MemcachedTiny.Util
             Host = host;
             Port = port;
         }
-
-        /// <summary>
-        /// 主机名
-        /// </summary>
-        public virtual string Host { get; }
-        /// <summary>
-        /// 端口号
-        /// </summary>
-        public virtual int Port { get; }
 
         /// <summary>
         /// 尝试从字符串中获得一个

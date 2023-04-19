@@ -21,6 +21,7 @@ namespace MemcachedTiny.Util
         /// 主机名
         /// </summary>
         string Host { get; }
+
         /// <summary>
         /// 端口
         /// </summary>
