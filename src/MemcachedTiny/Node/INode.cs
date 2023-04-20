@@ -10,30 +10,12 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using MemcachedTiny.Data;
-
 namespace MemcachedTiny.Node
 {
     /// <summary>
     /// Memcached 节点
     /// </summary>
-    public interface INode : Util.IConsistentHashNode
+    public interface INode : Util.IConsistentHashNode, IMemcachedExecute
     {
-        /// <summary>
-        /// 同步执行一个请求并返回特定结果
-        /// </summary>
-        /// <typeparam name="TC">结果类型</typeparam>
-        /// <param name="request">请求</param>
-        /// <returns>结果</returns>
-        TC Execute<TC>(IRequest request) where TC : IResponseReader, new();
-        /// <summary>
-        /// 异步执行一个请求并返回特定结果
-        /// </summary>
-        /// <typeparam name="TI">特定的结果类型</typeparam>
-        /// <typeparam name="TC">实现特定的结果类型的类</typeparam>
-        /// <param name="request">请求</param>
-        /// <param name="cancellation">一个标识操作取消的<see cref="CancellationToken"/></param>
-        /// <returns>异步任务</returns>
-        Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : TI, IResponseReader, new();
     }
 }
