@@ -24,11 +24,11 @@ namespace MemcachedTiny.Node
         {
             var data = Encoding.ASCII.GetBytes(key);
 
-            var hash = new Util.FNV1a();
+            var hashAlgorithm = new Util.FNV1a();
 
-            hash.ComputeHash(data);
+            var hashCode = hashAlgorithm.ComputeHash(data);
 
-            return hash.UIntHashCode;
+            return BitConverter.ToUInt32(hashCode, 0);
         }
     }
 }
