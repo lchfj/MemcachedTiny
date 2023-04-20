@@ -18,7 +18,7 @@ namespace MemcachedTiny
     public partial class MemcachedClient : IMemcachedClientAsync
     {
         /// <inheritdoc/>
-        public virtual Task<IResult> SetAsync(string key, int flags, int second, byte[] bytes, CancellationToken cancellation = default)
+        public virtual Task<IResult> SetAsync(string key, int flags, uint second, byte[] bytes, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 
@@ -42,7 +42,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public virtual Task<IResult> TouchAsync(string key, uint second, uint cas, CancellationToken cancellation = default)
+        public virtual Task<IResult> TouchAsync(string key, uint second, long cas, CancellationToken cancellation = default)
         {
             key = AssertKey(key);
 

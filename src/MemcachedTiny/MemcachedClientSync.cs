@@ -19,7 +19,7 @@ namespace MemcachedTiny
     {
 
         /// <inheritdoc/>
-        public virtual IResult Set(string key, int flags, int second, byte[] bytes)
+        public virtual IResult Set(string key, int flags, uint second, byte[] bytes)
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);
@@ -41,7 +41,7 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public virtual IResult Touch(string key, uint second, uint cas)
+        public virtual IResult Touch(string key, uint second, long cas)
         {
             key = AssertKey(key);
 

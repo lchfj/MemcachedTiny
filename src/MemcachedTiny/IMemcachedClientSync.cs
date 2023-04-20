@@ -26,7 +26,7 @@ namespace MemcachedTiny
         /// <param name="flags">数据标识</param>
         /// <param name="second">缓存时间（秒）</param>
         /// <param name="bytes">缓存数据</param>
-        IResult Set(string key, int flags, int second, byte[] bytes);
+        IResult Set(string key, int flags, uint second, byte[] bytes);
 
         /// <summary>
         /// 获取一个缓存值（如果存在的话）
@@ -41,7 +41,7 @@ namespace MemcachedTiny
         /// <param name="key">缓存键</param>
         /// <param name="second">缓存时间（秒）</param>
         /// <param name="cas">数据版本</param>
-        IResult Touch(string key, uint second, uint cas);
+        IResult Touch(string key, uint second, long cas);
 
         /// <summary>
         /// 获取一个缓存值并更新缓存时间（如果存在的话）

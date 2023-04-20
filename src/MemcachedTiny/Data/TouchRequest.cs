@@ -44,7 +44,7 @@ namespace MemcachedTiny.Data
         /// <param name="key">缓存键</param>
         /// <param name="second">新的过期时间</param>
         /// <param name="cas">数据版本</param>
-        public TouchRequest(string key, uint second, uint cas) : base(key)
+        public TouchRequest(string key, uint second, long cas) : base(key)
         {
             Second = second;
             CAS = cas;
