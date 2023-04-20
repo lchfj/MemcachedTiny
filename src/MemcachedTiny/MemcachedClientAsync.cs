@@ -20,61 +20,36 @@ namespace MemcachedTiny
         /// <inheritdoc/>
         public virtual Task<IResult> SetAsync(string key, int flags, uint second, byte[] bytes, CancellationToken cancellation = default)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new SetRequest(key, flags, second, bytes);
-
-            return node.ExecuteAsync<IResult, Result.Result>(request, cancellation);
+            return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
         }
 
         /// <inheritdoc/>
         public virtual Task<IGetResult> GetAsync(string key, CancellationToken cancellation = default)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new GetRequest(key);
-
-            return node.ExecuteAsync<IGetResult, GetResult>(request, cancellation);
+            return ExecuteAsync<IGetResult, GetResult>(key, request, cancellation);
         }
 
         /// <inheritdoc/>
         public virtual Task<IResult> TouchAsync(string key, uint second, long cas, CancellationToken cancellation = default)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new TouchRequest(key, second, cas);
-
-            return node.ExecuteAsync<IResult, Result.Result>(request, cancellation);
+            return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
         }
 
         /// <inheritdoc/>
         public virtual Task<IGetResult> GetAndTouchAsync(string key, uint second, CancellationToken cancellation = default)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new GetAndTouchRequest(key, second);
-
-            return node.ExecuteAsync<IGetResult, GetResult>(request, cancellation);
+            return ExecuteAsync<IGetResult, GetResult>(key, request, cancellation);
         }
 
         /// <inheritdoc/>
         public virtual Task<IResult> DeleteAsync(string key, CancellationToken cancellation = default)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new DeleteRequest(key);
-
-            return node.ExecuteAsync<IResult, Result.Result>(request, cancellation);
+            return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
         }
 
         /// <inheritdoc/>

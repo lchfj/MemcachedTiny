@@ -21,59 +21,36 @@ namespace MemcachedTiny
         /// <inheritdoc/>
         public virtual IResult Set(string key, int flags, uint second, byte[] bytes)
         {
-            key = AssertKey(key);
-            var node = SelectNodeForKey(key);
-
             var request = new SetRequest(key, flags, second, bytes);
-            return node.Execute<Result.Result>(request);
+            return Execute<Result.Result>(key, request);
         }
 
         /// <inheritdoc/>
         public virtual IGetResult Get(string key)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new GetRequest(key);
-
-            return node.Execute<GetResult>(request);
+            return Execute<GetResult>(key, request);
         }
 
         /// <inheritdoc/>
         public virtual IResult Touch(string key, uint second, long cas)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new TouchRequest(key, second, cas);
-
-            return node.Execute<Result.Result>(request);
+            return Execute<Result.Result>(key, request);
         }
 
         /// <inheritdoc/>
         public virtual IGetResult GetAndTouch(string key, uint second)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new GetAndTouchRequest(key, second);
-
-            return node.Execute<GetResult>(request);
+            return Execute<GetResult>(key, request);
         }
 
         /// <inheritdoc/>
         public virtual IResult Delete(string key)
         {
-            key = AssertKey(key);
-
-            var node = SelectNodeForKey(key);
-
             var request = new DeleteRequest(key);
-
-            return node.Execute<Result.Result>(request);
+            return Execute<Result.Result>(key, request);
         }
 
         /// <inheritdoc/>

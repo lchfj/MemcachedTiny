@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Data;
 using MemcachedTiny.Node;
 
 namespace MemcachedTiny
@@ -106,6 +107,37 @@ namespace MemcachedTiny
                 throw new ArgumentOutOfRangeException(nameof(key), "字符必须在0x21至0x7E之间");
 
             return key;
+        }
+
+
+        /// <summary>
+        /// 同步执行一个自定义的请求
+        /// </summary>
+        /// <typeparam name="TC">结果类型</typeparam>
+        /// <param name="key">请求对应的缓存键</param>
+        /// <param name="request">请求</param>
+        /// <returns>结果</returns>
+        public TC Execute<TC>(string key, IRequest request) where TC : IResponseReader, new()
+        {
+            key = AssertKey(key);
+            var node = SelectNodeForKey(key);
+            return node.Execute<TC>(request);
+        }
+
+        /// <summary>
+        /// 异步执行一个自定义的请求
+        /// </summary>
+        /// <typeparam name="TI">特定的结果类型</typeparam>
+        /// <typeparam name="TC">实现特定的结果类型的类</typeparam>
+        /// <param name="key">请求对应的缓存键</param>
+        /// <param name="request">请求</param>
+        /// <param name="cancellation">一个标识操作取消的<see cref="CancellationToken"/></param>
+        /// <returns>结果</returns>
+        public Task<TI> ExecuteAsync<TI, TC>(string key, IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
+        {
+            key = AssertKey(key);
+            var node = SelectNodeForKey(key);
+            return node.ExecuteAsync<TI, TC>(request, cancellation);
         }
     }
 }
