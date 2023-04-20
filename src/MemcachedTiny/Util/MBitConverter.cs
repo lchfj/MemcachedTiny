@@ -47,6 +47,18 @@ namespace MemcachedTiny.Util
 
             return bytes;
         }
+        /// <summary>
+        /// 获取字节数组
+        /// </summary>
+        public static byte[] GetByte(uint value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+
+            if (IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
+        }
 
         /// <summary>
         /// 获取字节数组
