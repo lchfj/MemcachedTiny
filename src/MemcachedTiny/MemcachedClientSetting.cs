@@ -13,13 +13,11 @@
 namespace MemcachedTiny
 {
     /// <summary>
-    /// 设定接口 
+    /// 设定
     /// </summary>
-    public interface IMemcachedClientSetting
+    public class MemcachedClientSetting : IMemcachedClientSetting
     {
-        /// <summary>
-        /// 所有连接地址
-        /// </summary>
-        List<string> Connect { get; }
+        /// <inheritdoc/>
+        public List<string> Connect { get; set; }
     }
 }
