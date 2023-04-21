@@ -28,6 +28,10 @@ namespace MemcachedTiny.Node
         /// </summary>
         public virtual IConnection Connect { get; set; }
         /// <summary>
+        /// 取消源
+        /// </summary>
+        public CancellationTokenSource HandCancle { get; set; }
+        /// <summary>
         /// 取消令牌
         /// </summary>
         public virtual CancellationToken CancellationToken { get; set; }

@@ -68,12 +68,13 @@ namespace MemcachedTiny.Node
         /// <inheritdoc/>
         public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
-            var tInfo = CreatTask<TC, TC>(request, CancellationToken.None, out var task);
+            if (!Avaliable)
+                return Response.CreatError<TC>();
 
+            var tInfo = CreatTask<TC, TC>(request, CancellationToken.None, out var task);
             var connect = ConnectPool.GetOne();
             try
             {
-
                 if (connect is null)
                 {
                     TaskQueue.Enqueue(tInfo);
@@ -85,11 +86,14 @@ namespace MemcachedTiny.Node
                 }
 
                 task.Wait();
-                return task.Result;
+                if (task.Status == TaskStatus.RanToCompletion)
+                    return task.Result;
+
+                return Response.CreatError<TC>();
             }
             catch
             {
-                throw;
+                return Response.CreatError<TC>();
             }
             finally
             {
@@ -97,18 +101,21 @@ namespace MemcachedTiny.Node
             }
         }
 
+
         /// <inheritdoc/>
         public virtual Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
         {
-            var tInfo = CreatTask<TI, TC>(request, cancellation, out var task);
+            if (!Avaliable)
+                return Task.FromResult<TI>(Response.CreatError<TC>());
 
+            var tInfo = CreatTask<TI, TC>(request, cancellation, out var task);
             TaskQueue.Enqueue(tInfo);
 
             CheckAsync(ConnectPool.GetOne());
 
-            return task;
+            // 对结果二次处理
+            return task.ContinueWith(r => r.Status == TaskStatus.RanToCompletion ? r.Result : Response.CreatError<TC>());
         }
-
 
         /// <summary>
         /// 创建一个未执行的任务
@@ -118,13 +125,18 @@ namespace MemcachedTiny.Node
         /// <returns>一个任务全部信息，同时也是传递到执行方法中的变量</returns>
         protected virtual QueueTaskInfo CreatTask<TI, TC>(IRequest request, CancellationToken cancellation, out Task<TI> task) where TC : IResponseReader, TI, new()
         {
+            var linkCancel = CancellationTokenSource.CreateLinkedTokenSource(cancellation);
+            // 任务五秒自动超时
+            linkCancel.CancelAfter(5000);
+
             var info = new QueueTaskInfo()
             {
-                CancellationToken = cancellation,
+                HandCancle = linkCancel,
+                CancellationToken = linkCancel.Token,
                 Request = request,
             };
 
-            task = new Task<TI>(ExecuteWorking<TI, TC>, info, cancellation);
+            task = new Task<TI>(ExecuteWorking<TI, TC>, info, linkCancel.Token);
 
             info.Task = task;
             return info;
@@ -136,7 +148,7 @@ namespace MemcachedTiny.Node
         protected virtual TI ExecuteWorking<TI, TC>(object obj) where TC : IResponseReader, TI, new()
         {
             if (obj is not QueueTaskInfo asyncObject || asyncObject.Connect is null)
-                return default;
+                return Response.CreatError<TC>();
 
             var result = asyncObject.Connect.Execute<TC>(asyncObject.Request);
             return result;
@@ -171,8 +183,13 @@ namespace MemcachedTiny.Node
             if (obj is not IConnection connect)
                 return;
 
+
             while (true)
             {
+                // 连接中断
+                if (!connect.Avaliable)
+                    break;
+
                 if (!TaskQueue.TryDequeue(out var taskInfo) || taskInfo is null)
                 {
                     if (TaskQueue.IsEmpty)
@@ -197,6 +214,15 @@ namespace MemcachedTiny.Node
             }
 
             connect.Dispose();
+
+            // 这里在节点不可用时清理掉节点中所有等待的任务
+            while (!Avaliable && !TaskQueue.IsEmpty)
+            {
+                if (TaskQueue.TryDequeue(out var taskInfo))
+                {
+                    taskInfo.HandCancle.Cancel();
+                }
+            }
         }
 
     }

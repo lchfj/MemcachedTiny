@@ -27,16 +27,40 @@ namespace MemcachedTiny.Node
         protected const int ResponseHeaderLength = 24;
 
         /// <inheritdoc/>
-        public virtual bool Avaliable => TcpClient?.Connected ?? false;
+        public virtual bool Avaliable
+        {
+            get
+            {
+                if (TcpClient?.Connected ?? false)
+                    return true;
+
+                Task.Run(TryConnect);
+                return false;
+            }
+        }
 
         /// <summary>
         /// 一个TPC连接
         /// </summary>
-        protected virtual TcpClient TcpClient { get; }
+        protected virtual TcpClient TcpClient { get; set; }
         /// <summary>
         /// 网络流
         /// </summary>
-        protected virtual NetworkStream Stream { get; }
+        protected virtual NetworkStream Stream { get; set; }
+        /// <summary>
+        /// 远端地址
+        /// </summary>
+        protected virtual IConnectionEndPoint EndPoint { get; }
+
+        /// <summary>
+        /// 断线后下次尝试重连的时间
+        /// </summary>
+        protected virtual long NextTryConnect { get; set; }
+
+        /// <summary>
+        /// 是否正在重连
+        /// </summary>
+        protected virtual bool OnConnection { get; set; }
 
         /// <summary>
         /// 创建实例
@@ -44,10 +68,18 @@ namespace MemcachedTiny.Node
         /// <param name="endPoint"></param>
         public TcpConnection(IConnectionEndPoint endPoint)
         {
-            TcpClient = CreatTcpClient(endPoint);
-            Stream = TcpClient.GetStream();
+            OnConnection = false;
+            EndPoint = endPoint;
+            Task.Run(TryConnect);
         }
 
+        /// <summary>
+        /// 析构
+        /// </summary>
+        ~TcpConnection()
+        {
+            Dispose();
+        }
         /// <summary>
         /// 创建以一个TCP连接
         /// </summary>
@@ -67,11 +99,78 @@ namespace MemcachedTiny.Node
         /// <inheritdoc/>
         public virtual void Dispose()
         {
-            Stream.Close();
-            Stream.Dispose();
-            TcpClient.Close();
-            TcpClient.Dispose();
+            Close();
         }
+
+        /// <summary>
+        /// 尝试重连
+        /// </summary>
+        protected virtual void TryConnect()
+        {
+            if (DateTime.UtcNow.Ticks < NextTryConnect)
+                return;
+
+            if (OnConnection)
+                return;
+            OnConnection = true;
+
+
+            Close();
+            try
+            {
+                TcpClient = CreatTcpClient(EndPoint);
+                Stream = TcpClient.GetStream();
+            }
+            catch (Exception)
+            {
+                Close();
+            }
+            finally
+            {
+                OnConnection = false;
+                NextTryConnect = DateTime.UtcNow.Ticks + TimeSpan.TicksPerSecond * 5;
+            }
+        }
+
+        /// <summary>
+        /// 关闭现有连接
+        /// </summary>
+        protected virtual void Close()
+        {
+            try
+            {
+                if (Stream is not null)
+                {
+                    Stream.Close();
+                    Stream.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                Stream = null;
+            }
+
+            try
+            {
+                if (TcpClient is not null)
+                {
+                    if (TcpClient.Connected)
+                        TcpClient.Close();
+                    TcpClient.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                TcpClient = null;
+            }
+        }
+
 
         /// <inheritdoc/>
         public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()

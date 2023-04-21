@@ -86,6 +86,18 @@ namespace MemcachedTiny.Data
         }
 
         /// <summary>
+        /// 生成一个返回错误的响应
+        /// </summary>
+        /// <typeparam name="TC">响应类型</typeparam>
+        /// <returns>响应</returns>
+        public static TC CreatError<TC>() where TC : IResponseReader, new()
+        {
+            var tc = new TC();
+            tc.Read(Error);
+            return tc;
+        }
+
+        /// <summary>
         /// 一个标识为错误的响应数据
         /// </summary>
         public static Response Error => new()
