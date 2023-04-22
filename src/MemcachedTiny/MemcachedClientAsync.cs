@@ -35,9 +35,9 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public virtual Task<IResult> TouchAsync(string key, uint second, long cas, CancellationToken cancellation = default)
+        public virtual Task<IResult> TouchAsync(string key, uint second, CancellationToken cancellation = default)
         {
-            var request = new TouchRequest(key, second, cas);
+            var request = new TouchRequest(key, second);
             return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
         }
 
@@ -52,7 +52,7 @@ namespace MemcachedTiny
         public virtual Task<IResult> DeleteAsync(string key, CancellationToken cancellation = default)
         {
             var request = new DeleteRequest(key);
-            return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
+            return ExecuteAsync<IResult, DeleteResult>(key, request, cancellation);
         }
 
         /// <inheritdoc/>

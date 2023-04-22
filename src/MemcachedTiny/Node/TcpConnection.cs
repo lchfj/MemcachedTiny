@@ -79,7 +79,7 @@ namespace MemcachedTiny.Node
 
             OnConnection = false;
             EndPoint = endPoint;
-            Task.Run(TryConnect);
+            TryConnect();
         }
 
         /// <summary>

@@ -40,8 +40,7 @@ namespace MemcachedTiny
         /// </summary>
         /// <param name="key">缓存键</param>
         /// <param name="second">缓存时间（秒）</param>
-        /// <param name="cas">数据版本</param>
-        IResult Touch(string key, uint second, long cas);
+        IResult Touch(string key, uint second);
 
         /// <summary>
         /// 获取一个缓存值并更新缓存时间（如果存在的话）

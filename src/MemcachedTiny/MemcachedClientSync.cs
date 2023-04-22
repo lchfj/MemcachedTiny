@@ -36,9 +36,9 @@ namespace MemcachedTiny
         }
 
         /// <inheritdoc/>
-        public virtual IResult Touch(string key, uint second, long cas)
+        public virtual IResult Touch(string key, uint second)
         {
-            var request = new TouchRequest(key, second, cas);
+            var request = new TouchRequest(key, second);
             return Execute<Result.Result>(key, request);
         }
 
@@ -53,7 +53,7 @@ namespace MemcachedTiny
         public virtual IResult Delete(string key)
         {
             var request = new DeleteRequest(key);
-            return Execute<Result.Result>(key, request);
+            return Execute<DeleteResult>(key, request);
         }
 
         /// <inheritdoc/>

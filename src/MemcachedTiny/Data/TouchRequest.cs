@@ -24,9 +24,6 @@ namespace MemcachedTiny.Data
         public override byte Opcode => 0x1c;
 
         /// <inheritdoc/>
-        public override long CAS { get; }
-
-        /// <inheritdoc/>
         public override byte[] Extras => MBitConverter.GetByte(Second);
 
         /// <inheritdoc/>
@@ -43,11 +40,9 @@ namespace MemcachedTiny.Data
         /// </summary>
         /// <param name="key">缓存键</param>
         /// <param name="second">新的过期时间</param>
-        /// <param name="cas">数据版本</param>
-        public TouchRequest(string key, uint second, long cas) : base(key)
+        public TouchRequest(string key, uint second) : base(key)
         {
             Second = second;
-            CAS = cas;
         }
     }
 }

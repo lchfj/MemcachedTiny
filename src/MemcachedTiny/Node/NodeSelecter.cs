@@ -76,7 +76,11 @@ namespace MemcachedTiny.Node
             if (NodeList.Count == 1)
             {
                 var node = NodeList[0];
-                return node.Avaliable ? node : NodeFack.Instance;
+                if (node.Avaliable)
+                    return node;
+
+                return NodeFack.Instance;
+
             }
             else if (NodeList.Count == 0)
             {
