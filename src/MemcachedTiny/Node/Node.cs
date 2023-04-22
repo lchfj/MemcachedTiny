@@ -11,6 +11,7 @@
  */
 
 using MemcachedTiny.Data;
+using MemcachedTiny.Logging;
 using MemcachedTiny.Util;
 
 namespace MemcachedTiny.Node
@@ -35,31 +36,40 @@ namespace MemcachedTiny.Node
         protected virtual ConcurrentQueue<QueueTaskInfo> TaskQueue { get; }
 
         /// <summary>
+        /// 日志
+        /// </summary>
+        protected virtual ILogger<Node> Logger { get; }
+
+        /// <summary>
         /// 创建实例
         /// </summary>
         /// <param name="connectString">Memcached连接地址</param>
-        public Node(string connectString)
+        /// <param name="loggerFactory"></param>
+        public Node(string connectString, ILoggerFactory loggerFactory)
         {
-            var endPoint = CreatEndPoint(connectString);
+            loggerFactory ??= LoggerEmptyFactory.Instance;
+            Logger = loggerFactory.CreateLogger<Node>();
+
+            var endPoint = CreatEndPoint(connectString, loggerFactory);
             if (endPoint is null)
                 return;
 
-            ConnectPool = CreatConnectionPool(endPoint);
+            ConnectPool = CreatConnectionPool(endPoint, loggerFactory);
             TaskQueue = new ConcurrentQueue<QueueTaskInfo>();
         }
 
         /// <summary>
         /// 创建连接池
         /// </summary>
-        protected virtual IConnectionPool CreatConnectionPool(IConnectionEndPoint endPoint)
+        protected virtual IConnectionPool CreatConnectionPool(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
         {
-            return new TCPConnectionPool(endPoint);
+            return new TCPConnectionPool(endPoint, loggerFactory);
         }
 
         /// <summary>
         /// 创建连接点
         /// </summary>
-        protected virtual IConnectionEndPoint CreatEndPoint(string connectString)
+        protected virtual IConnectionEndPoint CreatEndPoint(string connectString, ILoggerFactory loggerFactory)
         {
             ConnectionEndPoint.TryParse(connectString, out var endPoint);
             return endPoint;

@@ -11,6 +11,7 @@
  */
 
 using MemcachedTiny.Data;
+using MemcachedTiny.Logging;
 using MemcachedTiny.Node;
 
 namespace MemcachedTiny
@@ -32,6 +33,14 @@ namespace MemcachedTiny
         /// 设定
         /// </summary>
         protected virtual IMemcachedClientSetting Setting { get; }
+        /// <summary>
+        /// 日志工厂
+        /// </summary>
+        protected virtual ILoggerFactory LoggerFactory { get; }
+        /// <summary>
+        /// 这个类使用的日志
+        /// </summary>
+        protected virtual ILogger<MemcachedClient> Logger { get; }
 
         /// <summary>
         /// 创建实例
@@ -40,6 +49,8 @@ namespace MemcachedTiny
         public MemcachedClient(IMemcachedClientSetting setting)
         {
             Setting = setting ?? throw new ArgumentNullException(nameof(setting));
+            LoggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
+            Logger = LoggerFactory.CreateLogger<MemcachedClient>();
             NodeList = CreatNodeList();
             NodeSelecter = CreatNodeSelecter();
         }
@@ -59,7 +70,7 @@ namespace MemcachedTiny
 
             var nodeList = new INode[conent.Count];
             for (var i = 0; i < conent.Count; i++)
-                nodeList[i] = new Node.Node(conent[i]);
+                nodeList[i] = new Node.Node(conent[i], LoggerFactory);
 
             return new ReadOnlyCollection<INode>(nodeList);
         }
@@ -71,7 +82,7 @@ namespace MemcachedTiny
         /// <returns>节点选择器</returns>
         protected virtual INodeSelecter CreatNodeSelecter()
         {
-            return new NodeSelecter(NodeList);
+            return new NodeSelecter(NodeList, LoggerFactory);
         }
 
         /// <summary>

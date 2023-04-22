@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Logging;
 using MemcachedTiny.Util;
 
 namespace MemcachedTiny.Node
@@ -26,7 +27,6 @@ namespace MemcachedTiny.Node
 
         /// <inheritdoc/>
         public virtual bool Avaliable => AllConnectionList.Any(c => c.Avaliable);
-
         /// <summary>
         /// 所有的连接
         /// </summary>
@@ -35,14 +35,22 @@ namespace MemcachedTiny.Node
         /// 可以使用的连接
         /// </summary>
         protected virtual ConcurrentQueue<IConnection> AvailablePool { get; }
+        /// <summary>
+        /// 日志
+        /// </summary>
+        protected virtual ILogger<TCPConnectionPool> Logger { get; }
 
         /// <summary>
         /// 创建实例
         /// </summary>
         /// <param name="endPoint">连接点</param>
-        public TCPConnectionPool(IConnectionEndPoint endPoint)
+        /// <param name="loggerFactory">日志</param>
+        public TCPConnectionPool(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
         {
-            AllConnectionList = CreatConnection(endPoint);
+            loggerFactory ??= LoggerEmptyFactory.Instance;
+            Logger = loggerFactory.CreateLogger<TCPConnectionPool>();
+
+            AllConnectionList = CreatConnection(endPoint, loggerFactory);
             AvailablePool = new ConcurrentQueue<IConnection>(AllConnectionList);
         }
 
@@ -50,13 +58,14 @@ namespace MemcachedTiny.Node
         /// 创建所有连接
         /// </summary>
         /// <param name="endPoint">连接点</param>
+        /// <param name="loggerFactory">日志</param>
         /// <returns></returns>
-        protected virtual IReadOnlyList<IConnection> CreatConnection(IConnectionEndPoint endPoint)
+        protected virtual IReadOnlyList<IConnection> CreatConnection(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
         {
             var list = new List<IConnection>(MaxPoolSize);
 
             for (var i = 0; i < 8; i++)
-                list.Add(new TcpConnection(endPoint));
+                list.Add(new TcpConnection(endPoint, loggerFactory));
 
             return list.AsReadOnly();
         }

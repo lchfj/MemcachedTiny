@@ -11,6 +11,7 @@
  */
 
 using MemcachedTiny.Data;
+using MemcachedTiny.Logging;
 using MemcachedTiny.Util;
 using System.Net.Sockets;
 
@@ -56,6 +57,10 @@ namespace MemcachedTiny.Node
         /// 断线后下次尝试重连的时间
         /// </summary>
         protected virtual long NextTryConnect { get; set; }
+        /// <summary>
+        /// 日志
+        /// </summary>
+        protected virtual ILogger<TcpConnection> Logger { get; }
 
         /// <summary>
         /// 是否正在重连
@@ -66,8 +71,12 @@ namespace MemcachedTiny.Node
         /// 创建实例
         /// </summary>
         /// <param name="endPoint"></param>
-        public TcpConnection(IConnectionEndPoint endPoint)
+        /// <param name="loggerFactory">日志</param>
+        public TcpConnection(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
         {
+            loggerFactory ??= LoggerEmptyFactory.Instance;
+            Logger = loggerFactory.CreateLogger<TcpConnection>();
+
             OnConnection = false;
             EndPoint = endPoint;
             Task.Run(TryConnect);

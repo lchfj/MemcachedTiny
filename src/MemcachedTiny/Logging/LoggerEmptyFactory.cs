@@ -10,19 +10,39 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using MemcachedTiny.Logging;
-
-namespace MemcachedTiny
+namespace MemcachedTiny.Logging
 {
     /// <summary>
-    /// 设定
+    /// 空白日志
     /// </summary>
-    public class MemcachedClientSetting : IMemcachedClientSetting
+    public sealed class LoggerEmptyFactory : ILoggerFactory
     {
-        /// <inheritdoc/>
-        public List<string> Connect { get; set; }
+
+        private class Logger<T> : ILogger<T>
+        {
+            public bool IsEnabled(LogLevel logLevel)
+            {
+                return false;
+            }
+
+            public void Log(LogLevel logLevel, Exception exception, string message, params object[] args)
+            {
+            }
+        }
+
+        /// <summary>
+        /// 唯一实例
+        /// </summary>
+        public static LoggerEmptyFactory Instance { get; } = new();
+
+        private LoggerEmptyFactory()
+        {
+        }
 
         /// <inheritdoc/>
-        public ILoggerFactory LoggerFactory { get; set; }
+        public ILogger<T> CreateLogger<T>()
+        {
+            return new Logger<T>();
+        }
     }
 }

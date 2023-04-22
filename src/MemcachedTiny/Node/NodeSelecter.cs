@@ -10,6 +10,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Logging;
 using MemcachedTiny.Util;
 
 namespace MemcachedTiny.Node
@@ -19,6 +20,10 @@ namespace MemcachedTiny.Node
     /// </summary>
     public class NodeSelecter : INodeSelecter
     {
+        /// <summary>
+        /// 日志
+        /// </summary>
+        protected virtual ILogger<NodeSelecter> Logger { get; }
         /// <summary>
         /// 节点列表
         /// </summary>
@@ -36,8 +41,12 @@ namespace MemcachedTiny.Node
         /// 创建实例
         /// </summary>
         /// <param name="nodeList">节点列表</param>
-        public NodeSelecter(IReadOnlyList<INode> nodeList)
+        /// <param name="loggerFactory">日志</param>
+        public NodeSelecter(IReadOnlyList<INode> nodeList, ILoggerFactory loggerFactory)
         {
+            loggerFactory ??= LoggerEmptyFactory.Instance;
+            Logger = loggerFactory.CreateLogger<NodeSelecter>();
+
             NodeList = nodeList;
             KeyHash = CreatKeyHash();
             ConsistentHash = CreatConsistentHash();

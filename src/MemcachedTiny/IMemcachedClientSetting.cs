@@ -10,6 +10,8 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Logging;
+
 namespace MemcachedTiny
 {
     /// <summary>
@@ -21,5 +23,9 @@ namespace MemcachedTiny
         /// 所有连接地址
         /// </summary>
         List<string> Connect { get; }
+        /// <summary>
+        /// 日志工厂
+        /// </summary>
+        ILoggerFactory LoggerFactory { get; }
     }
 }
