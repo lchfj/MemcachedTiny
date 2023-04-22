@@ -10,31 +10,39 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
+using MemcachedTiny.Data;
+
 namespace MemcachedTiny.Node
 {
     /// <summary>
-    /// 单节点选择器
+    /// 假节点
     /// </summary>
-    public class NodeSelecterSingle : INodeSelecter
+    public sealed class NodeFack : INode
     {
         /// <summary>
-        /// 创建实例
+        /// 唯一实例
         /// </summary>
-        /// <param name="node">唯一节点</param>
-        public NodeSelecterSingle(INode node)
+        public static NodeFack Instance { get; } = new();
+        private NodeFack()
         {
-            Node = node;
         }
 
-        /// <summary>
-        /// 选择的唯一节点
-        /// </summary>
-        protected virtual INode Node { get; }
+        /// <inheritdoc/>
+        public int NodeIndex => 0;
 
         /// <inheritdoc/>
-        public virtual INode SelectForKey(string _)
+        public bool Avaliable => false;
+
+        /// <inheritdoc/>
+        public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
-            return Node;
+            return Response.CreatError<TC>();
+        }
+
+        /// <inheritdoc/>
+        public Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
+        {
+            return Task.FromResult<TI>(Response.CreatError<TC>());
         }
     }
 }

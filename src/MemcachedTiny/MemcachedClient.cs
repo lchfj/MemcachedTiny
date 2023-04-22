@@ -71,10 +71,7 @@ namespace MemcachedTiny
         /// <returns>节点选择器</returns>
         protected virtual INodeSelecter CreatNodeSelecter()
         {
-            if (NodeList.Count == 1)
-                return new NodeSelecterSingle(NodeList[0]);
-            else
-                return new NodeSelecterMulti(NodeList);
+            return new NodeSelecter(NodeList);
         }
 
         /// <summary>

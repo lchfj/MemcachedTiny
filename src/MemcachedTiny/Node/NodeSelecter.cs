@@ -15,9 +15,9 @@ using MemcachedTiny.Util;
 namespace MemcachedTiny.Node
 {
     /// <summary>
-    /// 多节点选择器
+    /// 节点选择器
     /// </summary>
-    public class NodeSelecterMulti : INodeSelecter
+    public class NodeSelecter : INodeSelecter
     {
         /// <summary>
         /// 节点列表
@@ -36,7 +36,7 @@ namespace MemcachedTiny.Node
         /// 创建实例
         /// </summary>
         /// <param name="nodeList">节点列表</param>
-        public NodeSelecterMulti(IReadOnlyList<INode> nodeList)
+        public NodeSelecter(IReadOnlyList<INode> nodeList)
         {
             NodeList = nodeList;
             KeyHash = CreatKeyHash();
@@ -64,8 +64,20 @@ namespace MemcachedTiny.Node
         /// <inheritdoc/>
         public virtual INode SelectForKey(string key)
         {
-            var hash = KeyHash.Hash(key);
-            return ConsistentHash.GetNode(hash);
+            if (NodeList.Count == 1)
+            {
+                var node = NodeList[0];
+                return node.Avaliable ? node : NodeFack.Instance;
+            }
+            else if (NodeList.Count == 0)
+            {
+                return NodeFack.Instance;
+            }
+            else
+            {
+                var hash = KeyHash.Hash(key);
+                return ConsistentHash.GetNode(hash) ?? NodeFack.Instance;
+            }
         }
     }
 }
