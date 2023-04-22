@@ -23,6 +23,12 @@ namespace MemcachedTiny
         public List<string> Connect { get; set; }
 
         /// <inheritdoc/>
+        public int? PoolSize { get; set; }
+
+        /// <inheritdoc/>
         public ILoggerFactory LoggerFactory { get; set; }
+
+        /// <inheritdoc/>
+        public ICustomerFactory CustomerFactory { get; set; }
     }
 }

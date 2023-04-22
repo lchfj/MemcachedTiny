@@ -70,15 +70,18 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建实例
         /// </summary>
+        /// <param name="setting">设置</param>
         /// <param name="endPoint"></param>
-        /// <param name="loggerFactory">日志</param>
-        public TcpConnection(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
+        public TcpConnection(IMemcachedClientSetting setting, IConnectionEndPoint endPoint)
         {
-            loggerFactory ??= LoggerEmptyFactory.Instance;
+            if (setting is null)
+                throw new ArgumentNullException(nameof(setting));
+            EndPoint = endPoint ?? throw new ArgumentNullException(nameof(endPoint));
+
+            var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
             Logger = loggerFactory.CreateLogger<TcpConnection>();
 
             OnConnection = false;
-            EndPoint = endPoint;
             TryConnect();
         }
 

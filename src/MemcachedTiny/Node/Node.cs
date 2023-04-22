@@ -43,27 +43,25 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建实例
         /// </summary>
-        /// <param name="connectString">Memcached连接地址</param>
-        /// <param name="loggerFactory"></param>
-        public Node(string connectString, ILoggerFactory loggerFactory)
+        /// <param name="setting">设定</param>
+        /// <param name="endPoint">Memcached连接地址</param>
+        public Node(IMemcachedClientSetting setting, IConnectionEndPoint endPoint)
         {
-            loggerFactory ??= LoggerEmptyFactory.Instance;
+            var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
             Logger = loggerFactory.CreateLogger<Node>();
 
-            var endPoint = CreatEndPoint(connectString, loggerFactory);
-            if (endPoint is null)
-                return;
-
-            ConnectPool = CreatConnectionPool(endPoint, loggerFactory);
+            ConnectPool = CreatConnectionPool(endPoint, setting);
             TaskQueue = new ConcurrentQueue<QueueTaskInfo>();
         }
 
         /// <summary>
         /// 创建连接池
         /// </summary>
-        protected virtual IConnectionPool CreatConnectionPool(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
+        protected virtual IConnectionPool CreatConnectionPool(IConnectionEndPoint endPoint, IMemcachedClientSetting setting)
         {
-            return new TCPConnectionPool(endPoint, loggerFactory);
+            var pool = setting.CustomerFactory?.CreatConnectionPool(setting, endPoint);
+            pool ??= new TCPConnectionPool(setting, endPoint);
+            return pool;
         }
 
         /// <summary>

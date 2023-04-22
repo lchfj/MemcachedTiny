@@ -27,7 +27,7 @@ namespace MemcachedTiny.Util
         /// 创建实例
         /// </summary>
         /// <param name="host">主机名</param>
-        /// <param name="port">端口好</param>
+        /// <param name="port">端口号</param>
         protected ConnectionEndPoint(string host, int port)
         {
             if (string.IsNullOrWhiteSpace(host))

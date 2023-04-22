@@ -20,10 +20,7 @@ namespace MemcachedTiny.Node
     /// </summary>
     public class TCPConnectionPool : IConnectionPool
     {
-        /// <summary>
-        /// 连接池大小
-        /// </summary>
-        protected const int MaxPoolSize = 8;
+        private const int DefaultPoolSize = 8;
 
         /// <inheritdoc/>
         public virtual bool Avaliable => AllConnectionList.Any(c => c.Avaliable);
@@ -43,31 +40,38 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建实例
         /// </summary>
+        /// <param name="setting">设定</param>
         /// <param name="endPoint">连接点</param>
-        /// <param name="loggerFactory">日志</param>
-        public TCPConnectionPool(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
+        public TCPConnectionPool(IMemcachedClientSetting setting, IConnectionEndPoint endPoint)
         {
-            loggerFactory ??= LoggerEmptyFactory.Instance;
+            var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
             Logger = loggerFactory.CreateLogger<TCPConnectionPool>();
 
-            AllConnectionList = CreatConnection(endPoint, loggerFactory);
+            AllConnectionList = CreatConnection(setting, endPoint);
             AvailablePool = new ConcurrentQueue<IConnection>(AllConnectionList);
         }
 
         /// <summary>
         /// 创建所有连接
         /// </summary>
+        /// <param name="setting">设定</param>
         /// <param name="endPoint">连接点</param>
-        /// <param name="loggerFactory">日志</param>
         /// <returns></returns>
-        protected virtual IReadOnlyList<IConnection> CreatConnection(IConnectionEndPoint endPoint, ILoggerFactory loggerFactory)
+        protected virtual IReadOnlyList<IConnection> CreatConnection(IMemcachedClientSetting setting, IConnectionEndPoint endPoint)
         {
-            var list = new List<IConnection>(MaxPoolSize);
+            var poolSize = setting.PoolSize.HasValue && setting.PoolSize.Value > 0 ? setting.PoolSize.Value : DefaultPoolSize;
 
-            for (var i = 0; i < 8; i++)
-                list.Add(new TcpConnection(endPoint, loggerFactory));
+            var list = new IConnection[poolSize];
 
-            return list.AsReadOnly();
+            for (var i = 0; i < poolSize; i++)
+            {
+                var connection = setting.CustomerFactory?.CreatConnection(setting, endPoint);
+                connection ??= new TcpConnection(setting, endPoint);
+
+                list[i] = connection;
+            }
+
+            return new ReadOnlyCollection<IConnection>(list);
         }
 
         /// <summary>

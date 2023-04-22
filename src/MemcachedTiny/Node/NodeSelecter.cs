@@ -40,14 +40,14 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建实例
         /// </summary>
+        /// <param name="setting">设定</param>
         /// <param name="nodeList">节点列表</param>
-        /// <param name="loggerFactory">日志</param>
-        public NodeSelecter(IReadOnlyList<INode> nodeList, ILoggerFactory loggerFactory)
+        public NodeSelecter(IMemcachedClientSetting setting, IReadOnlyList<INode> nodeList)
         {
-            loggerFactory ??= LoggerEmptyFactory.Instance;
+            var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
             Logger = loggerFactory.CreateLogger<NodeSelecter>();
 
-            NodeList = nodeList;
+            NodeList = nodeList ?? throw new ArgumentNullException(nameof(nodeList));
             KeyHash = CreatKeyHash();
             ConsistentHash = CreatConsistentHash();
         }
@@ -89,7 +89,12 @@ namespace MemcachedTiny.Node
             else
             {
                 var hash = KeyHash.Hash(key);
-                return ConsistentHash.GetNode(hash) ?? NodeFack.Instance;
+                var node = ConsistentHash.GetNode(hash);
+
+                if (node.Avaliable)
+                    return node;
+
+                return NodeFack.Instance;
             }
         }
     }

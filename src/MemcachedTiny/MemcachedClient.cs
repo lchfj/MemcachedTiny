@@ -13,6 +13,7 @@
 using MemcachedTiny.Data;
 using MemcachedTiny.Logging;
 using MemcachedTiny.Node;
+using MemcachedTiny.Util;
 
 namespace MemcachedTiny
 {
@@ -30,10 +31,6 @@ namespace MemcachedTiny
         /// </summary>
         protected virtual INodeSelecter NodeSelecter { get; }
         /// <summary>
-        /// 设定
-        /// </summary>
-        protected virtual IMemcachedClientSetting Setting { get; }
-        /// <summary>
         /// 这个类使用的日志
         /// </summary>
         protected virtual ILogger<MemcachedClient> Logger { get; }
@@ -44,12 +41,44 @@ namespace MemcachedTiny
         /// <param name="setting">设定</param>
         public MemcachedClient(IMemcachedClientSetting setting)
         {
+            if (setting is null)
+                throw new ArgumentNullException(nameof(setting));
+
             var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
             Logger = loggerFactory.CreateLogger<MemcachedClient>();
 
-            Setting = setting ?? throw new ArgumentNullException(nameof(setting));
-            NodeList = CreatNodeList(loggerFactory);
-            NodeSelecter = CreatNodeSelecter(loggerFactory);
+            var endpointList = CreatEnpointList(setting);
+            NodeList = CreatNodeList(setting, endpointList);
+            NodeSelecter = CreatNodeSelecter(setting);
+        }
+
+        private IReadOnlyList<IConnectionEndPoint> CreatEnpointList(IMemcachedClientSetting setting)
+        {
+            IReadOnlyList<string> connectList = setting.Connect;
+            if (connectList is not { Count: > 0 })
+                throw new ArgumentNullException("setting.Connect");
+
+            var list = new IConnectionEndPoint[connectList.Count];
+            for (var i = 0; i < connectList.Count; i++)
+            {
+                var connect = connectList[i];
+                if (string.IsNullOrWhiteSpace(connect))
+                    continue;
+
+                var endPoint = setting.CustomerFactory?.CreatConnectionEndPoint(connect);
+                if (endPoint is null)
+                {
+                    if (ConnectionEndPoint.TryParse(connect, out var endPoint1))
+                        endPoint = endPoint1;
+                }
+
+                list[i] = endPoint;
+            }
+
+            if (list.All(c => c is null))
+                throw new ArgumentNullException("setting.Connect");
+
+            return new ReadOnlyCollection<IConnectionEndPoint>(list);
         }
 
         /// <summary>
@@ -57,17 +86,25 @@ namespace MemcachedTiny
         /// </summary>
         /// <returns>节点列表</returns>
         /// <exception cref="ArgumentNullException">连接字符串为空，或空数组，或有字符串为空</exception>
-        protected virtual IReadOnlyList<INode> CreatNodeList(ILoggerFactory loggerFactory)
+        protected virtual IReadOnlyList<INode> CreatNodeList(IMemcachedClientSetting setting, IReadOnlyList<IConnectionEndPoint> endpointList)
         {
-            var conent = Setting.Connect;
-            if (conent is not { Count: > 0 })
-                throw new ArgumentNullException(nameof(Setting) + "." + nameof(Setting.Connect));
-            if (conent.Any(c => string.IsNullOrWhiteSpace(c)))
-                throw new ArgumentNullException(nameof(Setting) + "." + nameof(Setting.Connect));
+            var nodeList = new INode[endpointList.Count];
 
-            var nodeList = new INode[conent.Count];
-            for (var i = 0; i < conent.Count; i++)
-                nodeList[i] = new Node.Node(conent[i], loggerFactory);
+            for (var i = 0; i < endpointList.Count; i++)
+            {
+                var endpoint = endpointList[i];
+                if (endpoint is null)
+                {
+                    nodeList[i] = NodeFack.Instance;
+                }
+                else
+                {
+                    var node = setting.CustomerFactory?.CreatNode(setting, endpoint);
+                    node ??= new Node.Node(setting, endpoint);
+
+                    nodeList[i] = node;
+                }
+            }
 
             return new ReadOnlyCollection<INode>(nodeList);
         }
@@ -77,9 +114,9 @@ namespace MemcachedTiny
         /// 创建节点选择器
         /// </summary>
         /// <returns>节点选择器</returns>
-        protected virtual INodeSelecter CreatNodeSelecter(ILoggerFactory loggerFactory)
+        protected virtual INodeSelecter CreatNodeSelecter(IMemcachedClientSetting setting)
         {
-            return new NodeSelecter(NodeList, loggerFactory);
+            return setting.CustomerFactory?.CreatNodeSelecter(setting, NodeList) ?? new NodeSelecter(setting, NodeList);
         }
 
         /// <summary>
