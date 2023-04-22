@@ -20,6 +20,9 @@ namespace MemcachedTiny
         /// <inheritdoc/>
         public virtual Task<IResult> SetAsync(string key, int flags, uint second, byte[] bytes, CancellationToken cancellation = default)
         {
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
+
             var request = new SetRequest(key, flags, second, bytes);
             return ExecuteAsync<IResult, Result.Result>(key, request, cancellation);
         }

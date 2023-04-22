@@ -21,6 +21,9 @@ namespace MemcachedTiny
         /// <inheritdoc/>
         public virtual IResult Set(string key, int flags, uint second, byte[] bytes)
         {
+            if (bytes is null)
+                throw new ArgumentNullException(nameof(bytes));
+
             var request = new SetRequest(key, flags, second, bytes);
             return Execute<Result.Result>(key, request);
         }
