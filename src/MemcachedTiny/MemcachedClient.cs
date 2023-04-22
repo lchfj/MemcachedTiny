@@ -34,10 +34,6 @@ namespace MemcachedTiny
         /// </summary>
         protected virtual IMemcachedClientSetting Setting { get; }
         /// <summary>
-        /// 日志工厂
-        /// </summary>
-        protected virtual ILoggerFactory LoggerFactory { get; }
-        /// <summary>
         /// 这个类使用的日志
         /// </summary>
         protected virtual ILogger<MemcachedClient> Logger { get; }
@@ -48,11 +44,12 @@ namespace MemcachedTiny
         /// <param name="setting">设定</param>
         public MemcachedClient(IMemcachedClientSetting setting)
         {
+            var loggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
+            Logger = loggerFactory.CreateLogger<MemcachedClient>();
+
             Setting = setting ?? throw new ArgumentNullException(nameof(setting));
-            LoggerFactory = setting.LoggerFactory ?? LoggerEmptyFactory.Instance;
-            Logger = LoggerFactory.CreateLogger<MemcachedClient>();
-            NodeList = CreatNodeList();
-            NodeSelecter = CreatNodeSelecter();
+            NodeList = CreatNodeList(loggerFactory);
+            NodeSelecter = CreatNodeSelecter(loggerFactory);
         }
 
         /// <summary>
@@ -60,7 +57,7 @@ namespace MemcachedTiny
         /// </summary>
         /// <returns>节点列表</returns>
         /// <exception cref="ArgumentNullException">连接字符串为空，或空数组，或有字符串为空</exception>
-        protected virtual IReadOnlyList<INode> CreatNodeList()
+        protected virtual IReadOnlyList<INode> CreatNodeList(ILoggerFactory loggerFactory)
         {
             var conent = Setting.Connect;
             if (conent is not { Count: > 0 })
@@ -70,7 +67,7 @@ namespace MemcachedTiny
 
             var nodeList = new INode[conent.Count];
             for (var i = 0; i < conent.Count; i++)
-                nodeList[i] = new Node.Node(conent[i], LoggerFactory);
+                nodeList[i] = new Node.Node(conent[i], loggerFactory);
 
             return new ReadOnlyCollection<INode>(nodeList);
         }
@@ -80,9 +77,9 @@ namespace MemcachedTiny
         /// 创建节点选择器
         /// </summary>
         /// <returns>节点选择器</returns>
-        protected virtual INodeSelecter CreatNodeSelecter()
+        protected virtual INodeSelecter CreatNodeSelecter(ILoggerFactory loggerFactory)
         {
-            return new NodeSelecter(NodeList, LoggerFactory);
+            return new NodeSelecter(NodeList, loggerFactory);
         }
 
         /// <summary>

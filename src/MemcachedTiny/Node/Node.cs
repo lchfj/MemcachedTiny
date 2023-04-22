@@ -79,36 +79,28 @@ namespace MemcachedTiny.Node
         public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
             if (!Avaliable)
-                return Response.CreatError<TC>();
+                return Response.CreatError<TC>("NodeUnAvaliable");
 
             var tInfo = CreatTask<TC, TC>(request, CancellationToken.None, out var task);
             var connect = ConnectPool.GetOne();
-            try
-            {
-                if (connect is null)
-                {
-                    TaskQueue.Enqueue(tInfo);
-                }
-                else
-                {
-                    tInfo.Connect = connect;
-                    task.RunSynchronously();
-                }
 
-                task.Wait();
-                if (task.Status == TaskStatus.RanToCompletion)
-                    return task.Result;
+            if (connect is null)
+            {
+                TaskQueue.Enqueue(tInfo);
+            }
+            else
+            {
+                tInfo.Connect = connect;
+                task.RunSynchronously();
+            }
 
-                return Response.CreatError<TC>();
-            }
-            catch
-            {
-                return Response.CreatError<TC>();
-            }
-            finally
-            {
-                CheckAsync(connect);
-            }
+            task.Wait();
+            CheckAsync(connect);
+
+            if (task.Status == TaskStatus.RanToCompletion)
+                return task.Result;
+
+            return Response.CreatError<TC>(task.Status.ToString());
         }
 
 
@@ -116,7 +108,7 @@ namespace MemcachedTiny.Node
         public virtual Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
         {
             if (!Avaliable)
-                return Task.FromResult<TI>(Response.CreatError<TC>());
+                return Task.FromResult<TI>(Response.CreatError<TC>("NodeUnAvaliable"));
 
             var tInfo = CreatTask<TI, TC>(request, cancellation, out var task);
             TaskQueue.Enqueue(tInfo);
@@ -124,7 +116,13 @@ namespace MemcachedTiny.Node
             CheckAsync(ConnectPool.GetOne());
 
             // 对结果二次处理
-            return task.ContinueWith(r => r.Status == TaskStatus.RanToCompletion ? r.Result : Response.CreatError<TC>());
+            return task.ContinueWith(r =>
+            {
+                if (r.Status == TaskStatus.RanToCompletion)
+                    return r.Result;
+
+                return Response.CreatError<TC>(r.Status.ToString());
+            });
         }
 
         /// <summary>
@@ -158,7 +156,7 @@ namespace MemcachedTiny.Node
         protected virtual TI ExecuteWorking<TI, TC>(object obj) where TC : IResponseReader, TI, new()
         {
             if (obj is not QueueTaskInfo asyncObject || asyncObject.Connect is null)
-                return Response.CreatError<TC>();
+                return Response.CreatError<TC>("Error");
 
             var result = asyncObject.Connect.Execute<TC>(asyncObject.Request);
             return result;
@@ -211,16 +209,10 @@ namespace MemcachedTiny.Node
                 // 任务已经被终止
                 if (taskInfo.CancellationToken.IsCancellationRequested)
                     continue;
-                taskInfo.Connect = connect;
 
-                try
-                {
-                    taskInfo.Task.RunSynchronously();
-                    taskInfo.Task.Wait();
-                }
-                catch
-                {
-                }
+                taskInfo.Connect = connect;
+                taskInfo.Task.RunSynchronously();
+                taskInfo.Task.Wait();
             }
 
             connect.Dispose();

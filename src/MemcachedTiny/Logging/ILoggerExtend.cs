@@ -10,39 +10,19 @@
  * You should have received a copy of the GNU Lesser General Public License along with MemcachedTiny. If not, see <https://www.gnu.org/licenses/>.
  */
 
-using MemcachedTiny.Data;
-
-namespace MemcachedTiny.Node
+namespace MemcachedTiny.Logging
 {
     /// <summary>
-    /// 假节点
+    /// 日志方法扩展
     /// </summary>
-    public sealed class NodeFack : INode
+    public static class ILoggerExtend
     {
         /// <summary>
-        /// 唯一实例
+        /// 记录错误
         /// </summary>
-        public static NodeFack Instance { get; } = new();
-        private NodeFack()
+        public static void LogError<T>(this ILogger<T> logger, Exception ex)
         {
-        }
-
-        /// <inheritdoc/>
-        public int NodeIndex => 0;
-
-        /// <inheritdoc/>
-        public bool Avaliable => false;
-
-        /// <inheritdoc/>
-        public TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
-        {
-            return Response.CreatError<TC>("RunAtFackNode");
-        }
-
-        /// <inheritdoc/>
-        public Task<TI> ExecuteAsync<TI, TC>(IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
-        {
-            return Task.FromResult<TI>(Response.CreatError<TC>("RunAtFackNode"));
+            logger.Log(LogLevel.Error, ex, null, null);
         }
     }
 }

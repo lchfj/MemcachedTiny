@@ -90,30 +90,33 @@ namespace MemcachedTiny.Data
         /// </summary>
         /// <typeparam name="TC">响应类型</typeparam>
         /// <returns>响应</returns>
-        public static TC CreatError<TC>() where TC : IResponseReader, new()
+        public static TC CreatError<TC>(string error) where TC : IResponseReader, new()
         {
+            byte[] value;
+            if (string.IsNullOrWhiteSpace(error))
+                value = Array.Empty<byte>();
+            else
+                value = Encoding.UTF8.GetBytes(error.Trim());
+
+            var response = new Response()
+            {
+                CAS = 0,
+                DataType = 0,
+                Extras = Array.Empty<byte>(),
+                ExtrasLength = 0,
+                Key = string.Empty,
+                KeyLength = 0,
+                Magic = 0x81,
+                Opaque = int.MinValue,
+                Opcode = 0xFF,
+                TotalBodyLength = value.Length,
+                Value = value,
+                VbucketIdOrStatus = 0x0086
+            };
+
             var tc = new TC();
-            tc.Read(Error);
+            tc.Read(response);
             return tc;
         }
-
-        /// <summary>
-        /// 一个标识为错误的响应数据
-        /// </summary>
-        public static Response Error => new()
-        {
-            CAS = 0,
-            DataType = 0,
-            Extras = Array.Empty<byte>(),
-            ExtrasLength = 0,
-            Key = string.Empty,
-            KeyLength = 0,
-            Magic = 0x81,
-            Opaque = int.MinValue,
-            Opcode = 0xFF,
-            TotalBodyLength = 0,
-            Value = Array.Empty<byte>(),
-            VbucketIdOrStatus = 0x0086
-        };
     }
 }

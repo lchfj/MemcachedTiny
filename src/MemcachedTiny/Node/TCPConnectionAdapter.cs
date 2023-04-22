@@ -59,7 +59,6 @@ namespace MemcachedTiny.Node
             if (connection is null)
                 return;
 
-            //TODO: 释放时不应当有执行的任务
             Connection = null;
             ConnectionPool.Release(connection);
         }

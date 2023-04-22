@@ -130,8 +130,9 @@ namespace MemcachedTiny.Node
                 TcpClient = CreatTcpClient(EndPoint);
                 Stream = TcpClient.GetStream();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
                 Close();
             }
             finally
@@ -154,8 +155,9 @@ namespace MemcachedTiny.Node
                     Stream.Dispose();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             finally
             {
@@ -171,8 +173,9 @@ namespace MemcachedTiny.Node
                     TcpClient.Dispose();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex);
             }
             finally
             {
@@ -184,17 +187,22 @@ namespace MemcachedTiny.Node
         /// <inheritdoc/>
         public virtual TC Execute<TC>(IRequest request) where TC : IResponseReader, new()
         {
-            ClearStream();
-            SendRequest(request);
+            try
+            {
+                ClearStream();
+                SendRequest(request);
 
-            var response = ReadResponse();
+                var response = ReadResponse();
 
-
-            var tc = new TC();
-            tc.Read(response);
-
-
-            return tc;
+                var tc = new TC();
+                tc.Read(response);
+                return tc;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                return Response.CreatError<TC>(ex.Message);
+            }
         }
 
         /// <summary>
