@@ -5,6 +5,35 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>1.0.0</Version>
+    <Authors>lchfj</Authors>
+    <Copyright>Copyright (c) lchfj 2023</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>memcached;cache</PackageTags>
+    <RepositoryUrl>https://github.com/lchfj/MemcachedTiny</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <Description>
+MemcachedTiny 是一个非常简单的Memcached客户端，本身仅提供有限的客户端功能。
+扩展友好：预留扩展接口，所有方法支持重写，部分类可通过设定直接替换。
+支持连接：TCP（不支持SSL或TLS以及SASL认证）
+支持分布式：是
+支持协议：二进制协议
+支持方法：SET、GET、TOUCH、GAT、FLUSH
+
+MemcachedTiny is a very simple Memcached client that only provides limited client functionality.
+Extension friendly: Reserved extension interfaces, all methods support rewriting, and some classes can be directly replaced by setting.
+Support connection: TCP (no SSL or TLS or SASL Authentication)
+Support for distributed: Yes
+Support Protocol: Binary Protocol
+Support methods: SET, GET, TOUCH, GAT, FLUSH
+    </Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+    <None Include="../../COPYING" Pack="true" PackagePath="\" />
+    <None Include="../../COPYING.LESSER" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>
