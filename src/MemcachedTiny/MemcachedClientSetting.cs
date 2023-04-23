@@ -20,15 +20,15 @@ namespace MemcachedTiny
     public class MemcachedClientSetting : IMemcachedClientSetting
     {
         /// <inheritdoc/>
-        public List<string> Connect { get; set; }
+        public virtual List<string> Connect { get; set; }
 
         /// <inheritdoc/>
-        public int? PoolSize { get; set; }
+        public virtual int? PoolSize { get; set; }
 
         /// <inheritdoc/>
-        public ILoggerFactory LoggerFactory { get; set; }
+        public virtual ILoggerFactory LoggerFactory { get; set; }
 
         /// <inheritdoc/>
-        public ICustomerFactory CustomerFactory { get; set; }
+        public virtual ICustomerFactory CustomerFactory { get; set; }
     }
 }

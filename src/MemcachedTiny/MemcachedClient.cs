@@ -52,7 +52,7 @@ namespace MemcachedTiny
             NodeSelecter = CreatNodeSelecter(setting);
         }
 
-        private IReadOnlyList<IConnectionEndPoint> CreatEnpointList(IMemcachedClientSetting setting)
+        protected virtual IReadOnlyList<IConnectionEndPoint> CreatEnpointList(IMemcachedClientSetting setting)
         {
             IReadOnlyList<string> connectList = setting.Connect;
             if (connectList is not { Count: > 0 })
@@ -159,7 +159,7 @@ namespace MemcachedTiny
         /// <param name="key">请求对应的缓存键</param>
         /// <param name="request">请求</param>
         /// <returns>结果</returns>
-        public TC Execute<TC>(string key, IRequest request) where TC : IResponseReader, new()
+        public virtual TC Execute<TC>(string key, IRequest request) where TC : IResponseReader, new()
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);
@@ -175,7 +175,7 @@ namespace MemcachedTiny
         /// <param name="request">请求</param>
         /// <param name="cancellation">一个标识操作取消的<see cref="CancellationToken"/></param>
         /// <returns>结果</returns>
-        public Task<TI> ExecuteAsync<TI, TC>(string key, IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
+        public virtual Task<TI> ExecuteAsync<TI, TC>(string key, IRequest request, CancellationToken cancellation) where TC : IResponseReader, TI, new()
         {
             key = AssertKey(key);
             var node = SelectNodeForKey(key);

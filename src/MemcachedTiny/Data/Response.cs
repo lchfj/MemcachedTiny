@@ -15,6 +15,9 @@ using System.Text;
 
 namespace MemcachedTiny.Data
 {
+    /// <summary>
+    /// Memcached响应
+    /// </summary>
     public class Response : IResponse
     {
         /// <inheritdoc/>

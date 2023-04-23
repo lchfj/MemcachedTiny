@@ -30,7 +30,7 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 取消源
         /// </summary>
-        public CancellationTokenSource HandCancle { get; set; }
+        public virtual CancellationTokenSource HandCancle { get; set; }
         /// <summary>
         /// 取消令牌
         /// </summary>
