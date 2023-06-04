@@ -6,7 +6,7 @@
     <LangVersion>latest</LangVersion>
 	<Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>lchfj</Authors>
     <Copyright>Copyright (c) lchfj 2023</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -14,21 +14,15 @@
     <RepositoryUrl>https://github.com/lchfj/MemcachedTiny</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+	<PackageReleaseNotes>
+Nullable 特性支持
+解决所有节点均不可用时异常问题
+	</PackageReleaseNotes>
     <Description>
-MemcachedTiny 是一个非常简单的Memcached客户端，本身仅提供有限的客户端功能。
-扩展友好：预留扩展接口，所有方法支持重写，部分类可通过设定直接替换。
-支持连接：TCP（不支持SSL或TLS以及SASL认证）
-支持分布式：是
-支持协议：二进制协议
-支持方法：SET、GET、TOUCH、GAT、FLUSH
+MemcachedTiny 是一个简单高速的 Memcached .net 客户端，仅提供基本操作，不依赖其它任何第三方组件。
 
-MemcachedTiny is a very simple Memcached client that only provides limited client functionality.
-Extension friendly: Reserved extension interfaces, all methods support rewriting, and some classes can be directly replaced by setting.
-Support connection: TCP (no SSL or TLS or SASL Authentication)
-Support for distributed: Yes
-Support Protocol: Binary Protocol
-Support methods: SET, GET, TOUCH, GAT, FLUSH
-    </Description>
+MemcachedTiny is a simple and high-speed Memcached dotnet client that only provides basic operations and does not depend on any other third-party components.
+	</Description>
   </PropertyGroup>
 
   <ItemGroup>
