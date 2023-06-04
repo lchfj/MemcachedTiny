@@ -20,9 +20,9 @@ namespace MemcachedTiny.Result
     public class GetResult : Result, IGetResult
     {
         /// <inheritdoc/>
-        public virtual int Flags => Response.ExtrasLength >= 4 ? MBitConverter.ReadInt(Response.Extras, 0) : 0;
+        public virtual int Flags => Response is { Extras.Length: >= 4 } ? MBitConverter.ReadInt(Response.Extras, 0) : 0;
 
         /// <inheritdoc/>
-        public virtual byte[] Value => Response.Value;
+        public virtual byte[]? Value => Response?.Value;
     }
 }

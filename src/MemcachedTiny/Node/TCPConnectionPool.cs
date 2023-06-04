@@ -78,7 +78,7 @@ namespace MemcachedTiny.Node
         /// 获取一个可以使用的连接
         /// </summary>
         /// <returns></returns>
-        public virtual IConnection GetOne()
+        public virtual IConnection? GetOne()
         {
             if (AvailablePool.IsEmpty)
                 return null;

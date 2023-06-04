@@ -31,6 +31,6 @@ namespace MemcachedTiny.Logging
         /// <param name="exception">异常</param>
         /// <param name="message">消息</param>
         /// <param name="args">消息参数</param>
-        void Log(LogLevel logLevel, Exception exception, string message, params object[] args);
+        void Log(LogLevel logLevel, Exception? exception, string? message, params object[]? args);
     }
 }

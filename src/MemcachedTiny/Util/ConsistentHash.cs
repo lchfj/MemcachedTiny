@@ -81,7 +81,7 @@ namespace MemcachedTiny.Util
         }
 
         /// <inheritdoc/>
-        public virtual T GetNode(uint hash)
+        public virtual T? GetNode(uint hash)
         {
             if (NodeList.Count == 0)
                 return default;

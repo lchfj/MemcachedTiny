@@ -23,6 +23,6 @@ namespace MemcachedTiny.Util
         /// </summary>
         /// <param name="hash"></param>
         /// <returns></returns>
-        T GetNode(uint hash);
+        T? GetNode(uint hash);
     }
 }

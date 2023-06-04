@@ -48,13 +48,13 @@ namespace MemcachedTiny.Data
         public virtual long CAS { get; protected set; }
 
         /// <inheritdoc/>
-        public virtual byte[] Extras { get; protected set; }
+        public virtual byte[]? Extras { get; protected set; }
 
         /// <inheritdoc/>
-        public virtual string Key { get; protected set; }
+        public virtual string? Key { get; protected set; }
 
         /// <inheritdoc/>
-        public virtual byte[] Value { get; protected set; }
+        public virtual byte[]? Value { get; protected set; }
 
         /// <summary>
         /// 数据长度

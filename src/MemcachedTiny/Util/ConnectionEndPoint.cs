@@ -46,7 +46,7 @@ namespace MemcachedTiny.Util
         /// <param name="connectString">字符串</param>
         /// <param name="endPoint">结果</param>
         /// <returns></returns>
-        public static bool TryParse(string connectString, out ConnectionEndPoint endPoint)
+        public static bool TryParse(string connectString, out ConnectionEndPoint? endPoint)
         {
             endPoint = null;
 

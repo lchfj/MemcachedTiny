@@ -67,7 +67,7 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 创建连接点
         /// </summary>
-        protected virtual IConnectionEndPoint CreatEndPoint(string connectString, ILoggerFactory loggerFactory)
+        protected virtual IConnectionEndPoint? CreatEndPoint(string connectString, ILoggerFactory loggerFactory)
         {
             ConnectionEndPoint.TryParse(connectString, out var endPoint);
             return endPoint;
@@ -85,15 +85,14 @@ namespace MemcachedTiny.Node
             if (connect is null)
             {
                 TaskQueue.Enqueue(tInfo);
+                task.Wait();
             }
             else
             {
                 tInfo.Connect = connect;
                 task.RunSynchronously();
+                CheckAsync(connect);
             }
-
-            task.Wait();
-            CheckAsync(connect);
 
             if (task.Status == TaskStatus.RanToCompletion)
                 return task.Result;
@@ -111,7 +110,9 @@ namespace MemcachedTiny.Node
             var tInfo = CreatTask<TI, TC>(request, cancellation, out var task);
             TaskQueue.Enqueue(tInfo);
 
-            CheckAsync(ConnectPool.GetOne());
+            var connect = ConnectPool.GetOne();
+            if (connect is not null)
+                CheckAsync(connect);
 
             // 对结果二次处理
             return task.ContinueWith(r =>
@@ -135,12 +136,7 @@ namespace MemcachedTiny.Node
             // 任务五秒自动超时
             linkCancel.CancelAfter(5000);
 
-            var info = new QueueTaskInfo()
-            {
-                HandCancle = linkCancel,
-                CancellationToken = linkCancel.Token,
-                Request = request,
-            };
+            var info = new QueueTaskInfo(request, linkCancel);
 
             task = new Task<TI>(ExecuteWorking<TI, TC>, info, linkCancel.Token);
 
@@ -166,9 +162,6 @@ namespace MemcachedTiny.Node
         /// <param name="connect">当前的连接</param>
         protected virtual void CheckAsync(IConnection connect)
         {
-            if (connect is null)
-                return;
-
             if (TaskQueue.IsEmpty)
             {
                 connect.Dispose();
@@ -209,8 +202,8 @@ namespace MemcachedTiny.Node
                     continue;
 
                 taskInfo.Connect = connect;
-                taskInfo.Task.RunSynchronously();
-                taskInfo.Task.Wait();
+                taskInfo.Task?.RunSynchronously();
+                taskInfo.Task?.Wait();
             }
 
             connect.Dispose();

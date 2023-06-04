@@ -20,13 +20,25 @@ namespace MemcachedTiny.Node
     public class QueueTaskInfo
     {
         /// <summary>
+        /// 创建实例
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="handCancle"></param>
+        public QueueTaskInfo(IRequest request, CancellationTokenSource handCancle)
+        {
+            Request = request;
+            HandCancle = handCancle;
+            CancellationToken = handCancle.Token;
+        }
+
+        /// <summary>
         /// 请求
         /// </summary>
         public virtual IRequest Request { get; set; }
         /// <summary>
         /// 执行请求的连接
         /// </summary>
-        public virtual IConnection Connect { get; set; }
+        public virtual IConnection? Connect { get; set; }
         /// <summary>
         /// 取消源
         /// </summary>
@@ -38,6 +50,6 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 任务对象
         /// </summary>
-        public virtual Task Task { get; set; }
+        public virtual Task? Task { get; set; }
     }
 }

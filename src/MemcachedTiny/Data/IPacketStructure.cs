@@ -57,16 +57,16 @@ namespace MemcachedTiny.Data
         /// <summary>
         /// COMMAND-SPECIFIC EXTRAS
         /// </summary>
-        byte[] Extras { get; }
+        byte[]? Extras { get; }
 
         /// <summary>
         /// Key 
         /// </summary>
-        string Key { get; }
+        string? Key { get; }
 
         /// <summary>
         /// Value
         /// </summary>
-        byte[] Value { get; }
+        byte[]? Value { get; }
     }
 }

@@ -25,7 +25,7 @@ namespace MemcachedTiny.Logging
                 return false;
             }
 
-            public void Log(LogLevel logLevel, Exception exception, string message, params object[] args)
+            public void Log(LogLevel logLevel, Exception? exception, string? message, params object[]? args)
             {
             }
         }

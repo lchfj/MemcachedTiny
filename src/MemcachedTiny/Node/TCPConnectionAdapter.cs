@@ -25,7 +25,7 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 真实的连接实例
         /// </summary>
-        protected virtual IConnection Connection { get; set; }
+        protected virtual IConnection? Connection { get; set; }
         /// <summary>
         /// 对应的连接池
         /// </summary>

@@ -22,7 +22,7 @@ namespace MemcachedTiny
         /// <summary>
         /// 所有连接地址
         /// </summary>
-        List<string> Connect { get; }
+        List<string>? Connect { get; }
         /// <summary>
         /// 每个节点建立多少个连接
         /// </summary>
@@ -30,10 +30,10 @@ namespace MemcachedTiny
         /// <summary>
         /// 日志工厂
         /// </summary>
-        ILoggerFactory LoggerFactory { get; }
+        ILoggerFactory? LoggerFactory { get; }
         /// <summary>
         /// 自定义实现类
         /// </summary>
-        ICustomerFactory CustomerFactory { get; set; }
+        ICustomerFactory? CustomerFactory { get; set; }
     }
 }

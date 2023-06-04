@@ -18,6 +18,6 @@ namespace MemcachedTiny.Result
     public class DeleteResult : Result
     {
         /// <inheritdoc />
-        public override bool Success => base.Success || Response.VbucketIdOrStatus == 0x0001;
+        public override bool Success => base.Success || Response?.VbucketIdOrStatus == 0x0001;
     }
 }

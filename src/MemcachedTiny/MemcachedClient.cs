@@ -52,9 +52,15 @@ namespace MemcachedTiny
             NodeSelecter = CreatNodeSelecter(setting);
         }
 
+        /// <summary>
+        /// 创建连接点信息
+        /// </summary>
+        /// <param name="setting">设定</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">设定中的连接点为空</exception>
         protected virtual IReadOnlyList<IConnectionEndPoint> CreatEnpointList(IMemcachedClientSetting setting)
         {
-            IReadOnlyList<string> connectList = setting.Connect;
+            IReadOnlyList<string>? connectList = setting.Connect;
             if (connectList is not { Count: > 0 })
                 throw new ArgumentNullException("setting.Connect");
 
@@ -69,14 +75,13 @@ namespace MemcachedTiny
                 if (endPoint is null)
                 {
                     if (ConnectionEndPoint.TryParse(connect, out var endPoint1))
-                        endPoint = endPoint1;
+                        endPoint = endPoint1!;
+                    else
+                        throw new ArgumentException(connect, nameof(setting.Connect));
                 }
 
                 list[i] = endPoint;
             }
-
-            if (list.All(c => c is null))
-                throw new ArgumentNullException("setting.Connect");
 
             return new ReadOnlyCollection<IConnectionEndPoint>(list);
         }
@@ -93,17 +98,11 @@ namespace MemcachedTiny
             for (var i = 0; i < endpointList.Count; i++)
             {
                 var endpoint = endpointList[i];
-                if (endpoint is null)
-                {
-                    nodeList[i] = NodeFack.Instance;
-                }
-                else
-                {
-                    var node = setting.CustomerFactory?.CreatNode(setting, endpoint);
-                    node ??= new Node.Node(setting, endpoint);
 
-                    nodeList[i] = node;
-                }
+                var node = setting.CustomerFactory?.CreatNode(setting, endpoint);
+                node ??= new Node.Node(setting, endpoint);
+
+                nodeList[i] = node;
             }
 
             return new ReadOnlyCollection<INode>(nodeList);

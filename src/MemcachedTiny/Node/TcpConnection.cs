@@ -43,11 +43,11 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 一个TPC连接
         /// </summary>
-        protected virtual TcpClient TcpClient { get; set; }
+        protected virtual TcpClient? TcpClient { get; set; }
         /// <summary>
         /// 网络流
         /// </summary>
-        protected virtual NetworkStream Stream { get; set; }
+        protected virtual NetworkStream? Stream { get; set; }
         /// <summary>
         /// 远端地址
         /// </summary>
@@ -235,6 +235,9 @@ namespace MemcachedTiny.Node
         /// <param name="request">请求内容</param>
         protected virtual void SendRequest(IRequest request)
         {
+            if (Stream is null)
+                throw new NullReferenceException();
+
             request.WriteToStream(Stream);
         }
 
@@ -243,6 +246,9 @@ namespace MemcachedTiny.Node
         /// </summary>
         protected virtual void ClearStream()
         {
+            if (TcpClient is null || !TcpClient.Connected || Stream is null)
+                return;
+
             while (true)
             {
                 var byteInBuffer = TcpClient.Available;
@@ -262,6 +268,9 @@ namespace MemcachedTiny.Node
         /// <exception cref="IOException">流已断开</exception>
         protected virtual byte[] ReadLength(int length)
         {
+            if (Stream is null)
+                throw new NullReferenceException();
+
             if (length == 0)
                 return Array.Empty<byte>();
 

@@ -25,6 +25,6 @@ namespace MemcachedTiny.Result
         /// <summary>
         /// 获取到的数据
         /// </summary>
-        byte[] Value { get; }
+        byte[]? Value { get; }
     }
 }

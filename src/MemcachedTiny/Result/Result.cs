@@ -22,16 +22,16 @@ namespace MemcachedTiny.Result
         /// <summary>
         /// 原始相应数据
         /// </summary>
-        public virtual IPacketStructure Response { get; protected set; }
+        public virtual IPacketStructure? Response { get; protected set; }
 
         /// <inheritdoc/>
-        public virtual short Status => Response.VbucketIdOrStatus;
+        public virtual short Status => Response?.VbucketIdOrStatus ?? 0xFF;
 
         /// <inheritdoc/>
-        public virtual bool Success => Response.VbucketIdOrStatus == 0x0000;
+        public virtual bool Success => Response is not null && Response.VbucketIdOrStatus == 0x0000;
 
         /// <inheritdoc/>
-        public virtual long CAS => Response.CAS;
+        public virtual long CAS => Response?.CAS ?? 0L;
 
 
         /// <inheritdoc/>

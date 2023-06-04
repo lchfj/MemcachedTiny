@@ -24,7 +24,7 @@ namespace MemcachedTiny.Node
         /// <summary>
         /// 获取一个连接
         /// </summary>
-        IConnection GetOne();
+        IConnection? GetOne();
         /// <summary>
         /// 释放一个连接大连接池中
         /// </summary>
