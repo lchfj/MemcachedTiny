@@ -90,11 +90,10 @@ namespace MemcachedTiny.Node
             {
                 var hash = KeyHash.Hash(key);
                 var node = ConsistentHash.GetNode(hash);
+                if (node is null)
+                    return NodeFack.Instance;
 
-                if (node.Avaliable)
-                    return node;
-
-                return NodeFack.Instance;
+                return node;
             }
         }
     }
